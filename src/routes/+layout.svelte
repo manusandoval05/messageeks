@@ -39,7 +39,7 @@
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
-			<AppRailAnchor href="/me/" selected={$page.url.pathname.startsWith("/me")}>
+			<AppRailAnchor href="/@me/" selected={$page.url.pathname.startsWith("/@me")}>
 				<svelte:fragment slot="lead">(icon)</svelte:fragment>
 				<span>Conversar</span>
 			</AppRailAnchor>
