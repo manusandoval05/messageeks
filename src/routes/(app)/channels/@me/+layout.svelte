@@ -9,19 +9,8 @@
 		name: string;
 	}
 
-	// Navigation List
-	const people: Person[] = [
-		{ id: 0, avatar: 14, name: 'Michael' },
-		{ id: 1, avatar: 40, name: 'Janet' },
-		{ id: 2, avatar: 31, name: 'Susan' },
-		{ id: 3, avatar: 56, name: 'Joey' },
-		{ id: 4, avatar: 24, name: 'Lara' },
-		{ id: 5, avatar: 9, name: 'Melissa' }
-	];
-	let currentPersonId: number = people[0].id;
-
 	export let data;
-	$: ({ userConversations, username } = data);
+	$: ({ userConversations, username, activeConversationId } = data);
 
 	
 </script>
@@ -41,7 +30,7 @@
 					{#each userConversations ?? [] as conversation }
 						<a
 							href={`/channels/@me/${conversation.id}`}
-							class="btn w-full flex items-center space-x-4 {conversation.id === currentPersonId
+							class="btn w-full flex items-center space-x-4 {conversation.id === Number(activeConversationId)
 								? 'variant-filled-primary'
 								: 'bg-surface-hover-token'}"
 						>

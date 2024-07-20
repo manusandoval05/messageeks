@@ -1,4 +1,4 @@
-export const load = async({ parent }) => {
+export const load = async({ parent, params }) => {
     const { supabase, user, username } = await parent();
 
     if(!user) return;
@@ -10,5 +10,8 @@ export const load = async({ parent }) => {
     
     if(userConversationsRequest.error) return;
 
-    return { userConversations: userConversationsRequest.data }
+    return { 
+        userConversations: userConversationsRequest.data,
+        activeConversationId: params.conversation_id
+    }
 }
