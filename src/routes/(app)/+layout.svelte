@@ -23,7 +23,9 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
-
+<svelte:head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</svelte:head>
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
@@ -40,11 +42,19 @@
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
 			<AppRailAnchor href="/@me/" selected={$page.url.pathname.startsWith("/@me")}>
-				<svelte:fragment slot="lead">(icon)</svelte:fragment>
+				<svelte:fragment slot="lead">
+					<span class="material-symbols-outlined">
+						person
+					</span>
+				</svelte:fragment>
 				<span>Conversar</span>
 			</AppRailAnchor>
 			<AppRailAnchor href="/groups/" selected={$page.url.pathname.startsWith("/groups")}>
-				<svelte:fragment slot="lead">(icon)</svelte:fragment>
+				<svelte:fragment slot="lead">
+					<span class="material-symbols-outlined">
+						groups
+					</span>
+				</svelte:fragment>
 				<span>Grupos</span>
 			</AppRailAnchor>
 		</AppRail>

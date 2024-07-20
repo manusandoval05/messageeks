@@ -1,5 +1,5 @@
 
-<form class="space-y-6" action="#" method="POST">
+<form class="space-y-6" action="?/login" method="POST">
   <div>
     <label for="email" class="block text-sm font-medium leading-6 ">Email address</label>
     <div class="mt-2">

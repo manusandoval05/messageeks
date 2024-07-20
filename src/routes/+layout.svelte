@@ -15,5 +15,4 @@
 		return () => data.subscription.unsubscribe();
 	});
 </script>
-
 <slot />
