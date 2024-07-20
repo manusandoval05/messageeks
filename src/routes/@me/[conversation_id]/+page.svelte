@@ -103,7 +103,7 @@
     <!-- Conversation -->
     <section bind:this={elemChat} class="p-4 overflow-y-auto space-y-4">
         {#each messageFeed as bubble}
-            {#if bubble.host === true}
+            {#if bubble.host === false}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
                     <Avatar src="https://i.pravatar.cc/?img={bubble.avatar}" width="w-12" />
                     <div class="card p-4 variant-soft rounded-tl-none space-y-2">
