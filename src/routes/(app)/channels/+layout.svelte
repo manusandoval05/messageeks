@@ -49,7 +49,7 @@
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
-			<AppRailAnchor href="/@me/" selected={$page.url.pathname.startsWith("/@me")}>
+			<AppRailAnchor href="/channels/@me/" selected={$page.url.pathname.startsWith("/channels/@me")}>
 				<svelte:fragment slot="lead">
 					<span class="material-symbols-outlined">
 						person
@@ -57,7 +57,7 @@
 				</svelte:fragment>
 				<span>Conversar</span>
 			</AppRailAnchor>
-			<AppRailAnchor href="/groups/" selected={$page.url.pathname.startsWith("/groups")}>
+			<AppRailAnchor href="/channels/groups/" selected={$page.url.pathname.startsWith("channels/groups")}>
 				<svelte:fragment slot="lead">
 					<span class="material-symbols-outlined">
 						groups

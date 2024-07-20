@@ -40,7 +40,7 @@
 			<div class="p-4 space-y-4 overflow-y-auto">
 				<small class="opacity-50">Contacts</small>
 				<div class="flex flex-col space-y-1">
-					{conversations}
+					{userConversations}
 					{#each conversations as conversation }
 						<button
 							type="button"
