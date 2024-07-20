@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../../app.postcss';
-	import { AppShell, AppBar, AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, AppRail, AppRailAnchor, Avatar } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 
 	// Highlight JS
@@ -22,6 +22,10 @@
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	export let data;
+
+	$: ({ supabase, display_name } = data); 
 </script>
 <svelte:head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -35,7 +39,11 @@
 				<strong class="text-xl uppercase">Messageek</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				
+				<Avatar
+					border="border-4 border-surface-300-600-token hover:!border-primary-500"
+					cursor="cursor-pointer"
+					initials={ display_name.substring(0, 2)}
+				/>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
