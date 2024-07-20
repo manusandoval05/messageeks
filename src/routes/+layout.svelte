@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.postcss';
 	import { AppShell, AppBar, AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
+	import { page } from '$app/stores';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -38,11 +39,11 @@
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
-			<AppRailAnchor>
+			<AppRailAnchor href="/me/" selected={$page.url.pathname.startsWith("/me")}>
 				<svelte:fragment slot="lead">(icon)</svelte:fragment>
 				<span>Conversar</span>
 			</AppRailAnchor>
-			<AppRailAnchor>
+			<AppRailAnchor href="/groups/" selected={$page.url.pathname.startsWith("/groups")}>
 				<svelte:fragment slot="lead">(icon)</svelte:fragment>
 				<span>Grupos</span>
 			</AppRailAnchor>
