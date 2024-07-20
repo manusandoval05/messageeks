@@ -42,7 +42,7 @@
 				<Avatar
 					border="border-4 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
-					initials={ display_name.substring(0, 2)}
+					initials={ display_name?.substring(0, 2)}
 				/>
 			</svelte:fragment>
 		</AppBar>
