@@ -23,8 +23,6 @@
 	export let data;
 	$: ({ userConversations, username } = data);
 
-	let conversations = userConversations ?? [];
-
 	
 </script>
 
@@ -40,20 +38,18 @@
 			<div class="p-4 space-y-4 overflow-y-auto">
 				<small class="opacity-50">Contacts</small>
 				<div class="flex flex-col space-y-1">
-					{userConversations}
-					{#each conversations as conversation }
-						<button
-							type="button"
+					{#each userConversations ?? [] as conversation }
+						<a
+							href={`/channels/@me/${conversation.id}`}
 							class="btn w-full flex items-center space-x-4 {conversation.id === currentPersonId
 								? 'variant-filled-primary'
 								: 'bg-surface-hover-token'}"
-							on:click={() => (currentPersonId = conversation.id)}
 						>
 							<Avatar initials={conversation.sender_username === username ?  conversation.receiver_username.substring(0, 2) : conversation.sender_username.substring(0, 2)} width="w-8" />
 							<span class="flex-1 text-start">
 								{ conversation.sender_username === username ? conversation.receiver_username : conversation.sender_username }
 							</span>
-						</button>
+						</a>
 					{/each}
 				</div>
 			</div>
