@@ -43,7 +43,7 @@
 			...message,
 			host: message.sender_id === profile_id,
 			color: 'variant-soft-primary',
-			
+			timestamp: new Date(message.created_at)
 		}
 	});
 
@@ -146,7 +146,7 @@
                     <div class="card p-4 variant-soft rounded-tl-none space-y-2">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
-                            <small class="opacity-50">{bubble.created_at}</small>
+                            <small class="opacity-50">{bubble.timestamp}</small>
                         </header>
                         <p>{bubble.content}</p>
                     </div>
@@ -157,7 +157,7 @@
                     <div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
-                            <small class="opacity-50">{bubble.created_at}</small>
+                            <small class="opacity-50">{bubble.timestamp}</small>
                         </header>
                         <p>{bubble.content}</p>
                     </div>

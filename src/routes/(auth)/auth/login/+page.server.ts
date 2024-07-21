@@ -14,6 +14,6 @@ export const actions = {
             redirect(303, "/auth/error");
         }
 
-        redirect(303, "/@me");
+        redirect(303, "/channels/@me");
     }
 }
