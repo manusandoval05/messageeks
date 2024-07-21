@@ -36,7 +36,7 @@
 						>
 							<Avatar initials={conversation.sender_username === username ?  conversation.receiver_username.substring(0, 2) : conversation.sender_username.substring(0, 2)} width="w-8" />
 							<span class="flex-1 text-start">
-								{ conversation.sender_username === username ? conversation.receiver_username : conversation.sender_username }
+								{ conversation.sender_username === username ? conversation.receiver_username.slice(0, -5) : conversation.sender_username.slice(0, -5) }
 							</span>
 						</a>
 					{/each}

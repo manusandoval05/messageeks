@@ -35,8 +35,6 @@
 
 				cachedUserIds[message.sender_id] = data[0].display_name;
 				cachedUserIds = cachedUserIds;
-
-				console.log(cachedUserIds);
 			});
 		})();
 	}
@@ -144,7 +142,7 @@
         {#each messageFeed1 ?? [] as bubble}
             {#if bubble.host === false}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
-                    <Avatar initials={"SA"}  width="w-12" />
+                    <Avatar initials={cachedUserIds[bubble.sender_id] ? cachedUserIds[bubble.sender_id].substring(0, 2) : ""}  width="w-12" />
                     <div class="card p-4 variant-soft rounded-tl-none space-y-2">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
@@ -155,7 +153,7 @@
                 </div>
             {:else}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
-					<Avatar initials={"SA"} width="w-12" />
+					<Avatar initials={cachedUserIds[bubble.sender_id] ? cachedUserIds[bubble.sender_id].substring(0, 2) : ""} width="w-12" />
                     <div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
@@ -186,7 +184,9 @@
                 class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'}
                 on:click={addMessage}
             >
-                <i class="fa-solid fa-paper-plane"></i>
+				<span class="material-symbols-outlined">
+					send
+				</span>
             </button>
         </div>
     </section>
