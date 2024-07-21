@@ -18,9 +18,11 @@ export const load = async ({ params, locals: { supabase, safeGetSession }}) => {
         `)
         .eq("id", Number(params.conversation_id));
 
+    
     if(conversationMessagesRequest.error) throw error(400, "Failed to load conversation");
     
     return {
-        conversation_messages: conversationMessagesRequest.data[0].conversation_messages
+        conversation_messages: conversationMessagesRequest.data[0].conversation_messages,
+        conversation_id: Number(params.conversation_id),
     }
 };

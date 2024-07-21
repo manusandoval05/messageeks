@@ -3,21 +3,11 @@
     import { Avatar } from "@skeletonlabs/skeleton";
 
 
-    interface MessageFeed {
-		id: number;
-		host: boolean;
-		avatar: number;
-		name: string;
-		timestamp: string;
-		message: string;
-		color: string;
-	}
-
 	let cachedUserIds: any = {}
 	
 	export let data;
 
-	$: ({ conversation_messages, profile_id, supabase } = data); 
+	$: ({ conversation_messages, profile_id, supabase, conversation_id } = data); 
 	$: conversation_messages?.sort((a, b) => a.id - b.id);
 	// Begin caching usernames
 	$: if(conversation_messages){
@@ -38,58 +28,18 @@
 			});
 		})();
 	}
-	$: messageFeed1 = conversation_messages?.map(message => {
+	$: messageFeed1 = conversation_messages ? conversation_messages.map(message => {
 		return {
 			...message,
 			host: message.sender_id === profile_id,
 			color: 'variant-soft-primary',
 			timestamp: new Date(message.created_at)
 		}
-	});
-
-
-
+	}) : []; 
 
     let elemChat: HTMLElement;
     // Messages
-	let messageFeed: MessageFeed[] = [
-		{
-			id: 0,
-			host: true,
-			avatar: 48,
-			name: 'Jane',
-			timestamp: 'Yesterday @ 2:30pm',
-			message: 'Text',
-			color: 'variant-soft-primary'
-		},
-		{
-			id: 1,
-			host: false,
-			avatar: 14,
-			name: 'Michael',
-			timestamp: 'Yesterday @ 2:45pm',
-			message: 'Text',
-			color: 'variant-soft-primary'
-		},
-		{
-			id: 2,
-			host: true,
-			avatar: 48,
-			name: 'Jane',
-			timestamp: 'Yesterday @ 2:50pm',
-			message: 'Text',
-			color: 'variant-soft-primary'
-		},
-		{
-			id: 3,
-			host: false,
-			avatar: 14,
-			name: 'Michael',
-			timestamp: 'Yesterday @ 2:52pm',
-			message: 'text',
-			color: 'variant-soft-primary'
-		}
-	];
+
 	let currentMessage = '';
 
 	// For some reason, eslint thinks ScrollBehavior is undefined...
@@ -101,19 +51,21 @@
 	function getCurrentTimestamp(): string {
 		return new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 	}
+	
+	async function addMessage() {
+		const { data, error } = await supabase
+			.from("conversation_messages")
+			.insert({
+				sender_id: profile_id,
+				conversation_id: conversation_id,
+				content: currentMessage
+			})
+			.select();
+		
+		console.log(error, data);
 
-	function addMessage(): void {
-		const newMessage = {
-			id: messageFeed.length,
-			host: true,
-			avatar: 48,
-			name: 'Jane',
-			timestamp: `Today @ ${getCurrentTimestamp()}`,
-			message: currentMessage,
-			color: 'variant-soft-primary'
-		};
 		// Update the message feed
-		messageFeed = [...messageFeed, newMessage];
+		messageFeed1 = [...messageFeed1];
 		// Clear prompt
 		currentMessage = '';
 		// Smooth scroll to bottom
@@ -146,7 +98,7 @@
                     <div class="card p-4 variant-soft rounded-tl-none space-y-2">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
-                            <small class="opacity-50">{bubble.timestamp}</small>
+                            <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                         </header>
                         <p>{bubble.content}</p>
                     </div>
@@ -157,7 +109,7 @@
                     <div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
-                            <small class="opacity-50">{bubble.timestamp}</small>
+                            <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                         </header>
                         <p>{bubble.content}</p>
                     </div>
