@@ -9,8 +9,6 @@ export const load = async ({ params, locals: { supabase, safeGetSession }}) => {
     const conversationMessagesRequest = await supabase
         .from("conversations")
         .select(`
-            sender_username,
-            receiver_username, 
             conversation_messages (
                 id,
                 created_at,
