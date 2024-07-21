@@ -20,21 +20,26 @@
 	$: ({ conversation_messages, profile_id, supabase } = data); 
 	$: conversation_messages?.sort((a, b) => a.id - b.id);
 	// Begin caching usernames
-	$: (async() => {
-		conversation_messages?.forEach(async(message) => {
-			if(cachedUserIds[message.sender_id]) return; 
+	$: if(conversation_messages){
+		(async() => {
+			conversation_messages?.forEach(async(message) => {
+				if(cachedUserIds[message.sender_id]) return; 
+				
 			
-		
-			const { data, error } = await supabase
-				.from("user_profiles")
-				.select("display_name")
-				.eq("id", message.sender_id);
-			
-			if(error) return;
+				const { data, error } = await supabase
+					.from("user_profiles")
+					.select("display_name")
+					.eq("id", message.sender_id);
+				
+				if(error) return;
 
-			cachedUserIds[message.sender_id] = data[0].display_name
-		});
-	});
+				cachedUserIds[message.sender_id] = data[0].display_name;
+				cachedUserIds = cachedUserIds;
+
+				console.log(cachedUserIds);
+			});
+		})();
+	}
 	$: messageFeed1 = conversation_messages?.map(message => {
 		return {
 			...message,
@@ -136,34 +141,31 @@
 <div class="grid grid-row-[1fr_auto]">
     <!-- Conversation -->
     <section bind:this={elemChat} class="max-h-[500px] p-4 overflow-y-auto space-y-4">
-        {#each messageFeed as bubble}
+        {#each messageFeed1 ?? [] as bubble}
             {#if bubble.host === false}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
-                    <Avatar src="https://i.pravatar.cc/?img={bubble.avatar}" width="w-12" />
+                    <Avatar initials={"SA"}  width="w-12" />
                     <div class="card p-4 variant-soft rounded-tl-none space-y-2">
                         <header class="flex justify-between items-center">
-                            <p class="font-bold">{bubble.name}</p>
-                            <small class="opacity-50">{bubble.timestamp}</small>
+                            <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
+                            <small class="opacity-50">{bubble.created_at}</small>
                         </header>
-                        <p>{bubble.message}</p>
+                        <p>{bubble.content}</p>
                     </div>
                 </div>
             {:else}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
-					<Avatar src="https://i.pravatar.cc/?img={bubble.avatar}" width="w-12" />
+					<Avatar initials={"SA"} width="w-12" />
                     <div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
                         <header class="flex justify-between items-center">
-                            <p class="font-bold">{bubble.name}</p>
-                            <small class="opacity-50">{bubble.timestamp}</small>
+                            <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
+                            <small class="opacity-50">{bubble.created_at}</small>
                         </header>
-                        <p>{bubble.message}</p>
+                        <p>{bubble.content}</p>
                     </div>
                 </div>
             {/if}
         {/each}
-		{#each messageFeed1 ?? [] as message}
-			<p>{message}</p>
-		{/each}
     </section>
     <!-- Prompt -->
     <section class="border-t border-surface-500/30 p-4">
