@@ -17,8 +17,24 @@
 	
 	export let data;
 
-	$: ({ conversation_messages, profile_id } = data); 
+	$: ({ conversation_messages, profile_id, supabase } = data); 
 	$: conversation_messages?.sort((a, b) => a.id - b.id);
+	// Begin caching usernames
+	$: (async() => {
+		conversation_messages?.forEach(async(message) => {
+			if(cachedUserIds[message.sender_id]) return; 
+			
+		
+			const { data, error } = await supabase
+				.from("user_profiles")
+				.select("display_name")
+				.eq("id", message.sender_id);
+			
+			if(error) return;
+
+			cachedUserIds[message.sender_id] = data[0].display_name
+		});
+	});
 	$: messageFeed1 = conversation_messages?.map(message => {
 		return {
 			...message,
