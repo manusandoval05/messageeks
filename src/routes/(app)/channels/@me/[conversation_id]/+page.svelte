@@ -13,6 +13,24 @@
 		color: string;
 	}
 
+	let cachedUserIds: any = {}
+	
+	export let data;
+
+	$: ({ conversation_messages, profile_id } = data); 
+	$: conversation_messages?.sort((a, b) => a.id - b.id);
+	$: messageFeed1 = conversation_messages?.map(message => {
+		return {
+			...message,
+			host: message.sender_id === profile_id,
+			color: 'variant-soft-primary',
+			
+		}
+	});
+
+
+
+
     let elemChat: HTMLElement;
     // Messages
 	let messageFeed: MessageFeed[] = [
@@ -127,6 +145,9 @@
                 </div>
             {/if}
         {/each}
+		{#each messageFeed1 ?? [] as message}
+			<p>{message}</p>
+		{/each}
     </section>
     <!-- Prompt -->
     <section class="border-t border-surface-500/30 p-4">

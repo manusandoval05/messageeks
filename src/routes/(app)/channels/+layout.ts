@@ -5,7 +5,7 @@ export const load = async({ parent }) => {
 
     const usernameRequest = await supabase
         .from("user_profiles")
-        .select("display_name, username")
+        .select("display_name, username, id")
         .eq("user_id", user.id);
 
     
@@ -13,6 +13,7 @@ export const load = async({ parent }) => {
 
     return { 
         username: usernameRequest.data[0].username as string,
-        display_name: usernameRequest.data[0].display_name as string
+        display_name: usernameRequest.data[0].display_name as string,
+        profile_id: usernameRequest.data[0].id as number
     }
 }

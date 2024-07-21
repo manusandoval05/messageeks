@@ -36,7 +36,7 @@
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Messageek</strong>
+				<strong class="text-xl uppercase">Messageeks</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<Avatar
