@@ -28,7 +28,7 @@
 			});
 		})();
 	}
-	$: messageFeed1 = conversation_messages ? conversation_messages.map(message => {
+	$: messageFeed = conversation_messages ? conversation_messages.map(message => {
 		return {
 			...message,
 			host: message.sender_id === profile_id,
@@ -62,10 +62,22 @@
 			})
 			.select();
 		
-		console.log(error, data);
+		if(error){
+			console.log(error);
+			return;
+		}
 
+		if(!data) return;
+
+		const newMessage = {
+			...data[0],
+			host: data[0].sender_id === profile_id,
+			color: 'variant-soft-primary',
+			timestamp: new Date(data[0].created_at)
+
+		}
 		// Update the message feed
-		messageFeed1 = [...messageFeed1];
+		messageFeed = [...messageFeed, newMessage];
 		// Clear prompt
 		currentMessage = '';
 		// Smooth scroll to bottom
@@ -91,7 +103,7 @@
 <div class="grid grid-row-[1fr_auto]">
     <!-- Conversation -->
     <section bind:this={elemChat} class="max-h-[500px] p-4 overflow-y-auto space-y-4">
-        {#each messageFeed1 ?? [] as bubble}
+        {#each messageFeed ?? [] as bubble}
             {#if bubble.host === false}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
                     <Avatar initials={cachedUserIds[bubble.sender_id] ? cachedUserIds[bubble.sender_id].substring(0, 2) : ""}  width="w-12" />
