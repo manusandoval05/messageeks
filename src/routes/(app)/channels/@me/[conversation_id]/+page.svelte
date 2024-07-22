@@ -93,6 +93,7 @@
 	}
 
 	function onPromptKeydown(event: KeyboardEvent): void {
+		adjustTextAreaSize();
 		if (['Enter'].includes(event.code)) {
 			event.preventDefault();
 			addMessage();
@@ -115,7 +116,7 @@
 	});
 </script>
 
-<div class="grid grid-row-[1fr_auto]">
+<div class="grid grid-row-[auto_1fr]">
     <!-- Conversation -->
     <section bind:this={elemChat} class={`max-h-[500px] p-4 overflow-y-auto space-y-4`}>
         {#each messageFeed ?? [] as bubble}
@@ -154,12 +155,12 @@
                 bind:value={currentMessage}
 				bind:this={elemMessageTextArea}
 				on:input={adjustTextAreaSize}
-                class="bg-transparent border-0 ring-0 resize-none h-10"
+                on:keydown={onPromptKeydown}
+                class="bg-transparent border-0 ring-0 resize-none h-10 max-h-[256px]"
                 name="prompt"
                 id="prompt"
                 placeholder="Write a message..."
                 rows="1"
-                on:keydown={onPromptKeydown}
             ></textarea>
             <button
                 class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'}

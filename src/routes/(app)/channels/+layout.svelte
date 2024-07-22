@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../../../app.postcss';
-	import { AppShell, AppBar, AppRail, AppRailAnchor, Avatar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, AppRail, AppRailAnchor, AppRailTile, Avatar } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 
 	// Highlight JS
@@ -23,6 +23,7 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
+	let currentTile = 0;
 	export let data;
 
 	$: ({ supabase, display_name } = data); 
@@ -38,13 +39,7 @@
 			<svelte:fragment slot="lead">
 				<strong class="text-xl uppercase">Messageeks</strong>
 			</svelte:fragment>
-			<svelte:fragment slot="trail">
-				<Avatar
-					border="border-4 border-surface-300-600-token hover:!border-primary-500"
-					cursor="cursor-pointer"
-					initials={ display_name?.substring(0, 2)}
-				/>
-			</svelte:fragment>
+			
 		</AppBar>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
@@ -65,6 +60,17 @@
 				</svelte:fragment>
 				<span>Grupos</span>
 			</AppRailAnchor>
+			<svelte:fragment slot="trail">
+				<AppRailTile bind:group={currentTile} name="profile-tile" value={NaN}>
+					<div class="flex justify-center">
+						<Avatar
+							border="border-4 border-surface-300-600-token hover:!border-primary-500"
+							cursor="cursor-pointer"
+							initials={ display_name?.substring(0, 2)}
+						/>
+					</div>
+				</AppRailTile>
+			</svelte:fragment>
 		</AppRail>
 	</svelte:fragment>
 	<!-- Page Route Content -->
