@@ -39,7 +39,6 @@
 			<svelte:fragment slot="lead">
 				<strong class="text-xl uppercase">Messageeks</strong>
 			</svelte:fragment>
-			
 		</AppBar>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">

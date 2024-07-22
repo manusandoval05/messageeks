@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Avatar } from "@skeletonlabs/skeleton";
+    import { AppBar, Avatar } from "@skeletonlabs/skeleton";
 
 
 	let cachedUserIds: any = {}
@@ -115,8 +115,17 @@
 			.subscribe();
 	});
 </script>
-
 <div class="grid grid-row-[auto_1fr]" style="max-height: calc(100dvh - 60px);">
+	<AppBar background={"bg-surface-700"}>
+		<svelte:fragment slot="lead">
+			<a class="lg:hidden flex content-center" href="/channels/@me">
+				<span class="material-symbols-outlined">
+					arrow_back
+				</span>
+			</a>
+		</svelte:fragment>
+		<h5 class="text-lg">Chat</h5>
+	</AppBar>
     <!-- Conversation -->
     <section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4`}>
         {#each messageFeed ?? [] as bubble}
