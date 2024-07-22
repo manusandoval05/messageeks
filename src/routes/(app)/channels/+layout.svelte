@@ -2,6 +2,7 @@
 	import '../../../app.postcss';
 	import { AppShell, AppBar, AppRail, AppRailAnchor, AppRailTile, Avatar } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
+	import { hideAppRail } from '$lib/stores';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -32,7 +33,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </svelte:head>
 <!-- App Shell -->
-<AppShell>
+<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? "hidden" : ""}`}>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<div class="hidden lg:block">

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { AppBar, Avatar } from "@skeletonlabs/skeleton";
+	import { hideAppRail } from "$lib/stores.js";
 
 
 	let cachedUserIds: any = {}
@@ -102,6 +103,15 @@
 
 	// When DOM mounted, scroll to bottom
 	onMount(() => {
+		const mediaQuery = window.matchMedia("(min-width: 1024px)");
+		mediaQuery.addEventListener("change", event => {
+			if(event.matches){
+				hideAppRail.set(false);
+			}
+			else{
+				hideAppRail.set(true);
+			}
+		})
 		scrollChatBottom();
 		supabase
 			.channel(`conversation_${conversation_id}`)
