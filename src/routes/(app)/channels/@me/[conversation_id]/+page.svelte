@@ -38,6 +38,8 @@
 	}) : []; 
 
     let elemChat: HTMLElement;
+	let elemMessageTextArea: HTMLTextAreaElement;
+	let elemMessageTextHeight;
     // Messages
 
 	let currentMessage = '';
@@ -60,6 +62,9 @@
 		setTimeout(() => {
 			scrollChatBottom('smooth');
 		}, 0);
+	}
+	function adjustTextAreaSize(){
+		elemMessageTextArea.style.height = `${elemMessageTextArea.scrollHeight}px`;
 	}
 
 	// For some reason, eslint thinks ScrollBehavior is undefined...
@@ -112,7 +117,7 @@
 
 <div class="grid grid-row-[1fr_auto]">
     <!-- Conversation -->
-    <section bind:this={elemChat} class="max-h-[500px] p-4 overflow-y-auto space-y-4">
+    <section bind:this={elemChat} class={`max-h-[500px] p-4 overflow-y-auto space-y-4`}>
         {#each messageFeed ?? [] as bubble}
             {#if bubble.host === false}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
@@ -128,7 +133,7 @@
             {:else}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
 					<Avatar initials={cachedUserIds[bubble.sender_id] ? cachedUserIds[bubble.sender_id].substring(0, 2) : ""} width="w-12" />
-                    <div class="card p-4 rounded-tr-none space-y-2 {bubble.color}">
+                    <div class="card p-4 rounded-tl-none space-y-2 {bubble.color}">
                         <header class="flex justify-between items-center">
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
                             <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
@@ -147,7 +152,9 @@
             <button class="input-group-shim">+</button>
             <textarea
                 bind:value={currentMessage}
-                class="bg-transparent border-0 ring-0"
+				bind:this={elemMessageTextArea}
+				on:input={adjustTextAreaSize}
+                class="bg-transparent border-0 ring-0 resize-none h-10"
                 name="prompt"
                 id="prompt"
                 placeholder="Write a message..."
