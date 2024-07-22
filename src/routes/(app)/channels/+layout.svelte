@@ -35,11 +35,13 @@
 <AppShell>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
-		<AppBar>
-			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Messageeks</strong>
-			</svelte:fragment>
-		</AppBar>
+		<div class="hidden lg:block">
+			<AppBar>
+				<svelte:fragment slot="lead">
+					<strong class="text-xl uppercase">Messageeks</strong>
+				</svelte:fragment>
+			</AppBar>
+		</div>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
