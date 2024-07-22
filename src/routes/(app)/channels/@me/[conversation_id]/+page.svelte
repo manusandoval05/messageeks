@@ -42,6 +42,26 @@
 
 	let currentMessage = '';
 
+	const handleNewMessage = (payload: any) => {
+		const newMessage = {
+			...payload.new,
+			host: payload.new.sender_id === profile_id,
+			color: 'variant-soft-primary',
+			timestamp: new Date(payload.new.created_at)
+
+		}
+
+		// Update the message feed
+		messageFeed = [...messageFeed, newMessage];
+		
+		// Clear prompt
+		if(newMessage.host) currentMessage = '';
+		// Timeout prevents race condition
+		setTimeout(() => {
+			scrollChatBottom('smooth');
+		}, 0);
+	}
+
 	// For some reason, eslint thinks ScrollBehavior is undefined...
 	// eslint-disable-next-line no-undef
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
@@ -53,38 +73,18 @@
 	}
 	
 	async function addMessage() {
-		const { data, error } = await supabase
+		const { error } = await supabase
 			.from("conversation_messages")
 			.insert({
 				sender_id: profile_id,
 				conversation_id: conversation_id,
 				content: currentMessage
-			})
-			.select();
+			});
 		
 		if(error){
-			console.log(error);
+			console.error(error);
 			return;
 		}
-
-		if(!data) return;
-
-		const newMessage = {
-			...data[0],
-			host: data[0].sender_id === profile_id,
-			color: 'variant-soft-primary',
-			timestamp: new Date(data[0].created_at)
-
-		}
-		// Update the message feed
-		messageFeed = [...messageFeed, newMessage];
-		// Clear prompt
-		currentMessage = '';
-		// Smooth scroll to bottom
-		// Timeout prevents race condition
-		setTimeout(() => {
-			scrollChatBottom('smooth');
-		}, 0);
 	}
 
 	function onPromptKeydown(event: KeyboardEvent): void {
@@ -97,6 +97,16 @@
 	// When DOM mounted, scroll to bottom
 	onMount(() => {
 		scrollChatBottom();
+		supabase
+			.channel(`conversation_${conversation_id}`)
+			.on("postgres_changes", { 
+				event: "INSERT", 
+				schema: "public", 
+				table: "conversation_messages",
+				filter: `conversation_id=eq.${conversation_id}`
+			}, 
+			handleNewMessage)
+			.subscribe();
 	});
 </script>
 
