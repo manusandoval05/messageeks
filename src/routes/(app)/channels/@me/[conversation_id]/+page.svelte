@@ -65,7 +65,8 @@
 		}, 0);
 	}
 	function adjustTextAreaSize(){
-		elemMessageTextArea.style.height = `${elemMessageTextArea.scrollHeight}px`;
+		elemMessageTextArea.style.height = "auto";
+		elemMessageTextArea.style.height = `${elemMessageTextArea.scrollHeight}px`;	
 	}
 
 	// For some reason, eslint thinks ScrollBehavior is undefined...
@@ -125,7 +126,7 @@
 			.subscribe();
 	});
 </script>
-<div class="grid grid-row-[auto_1fr]" style="max-height: calc(100dvh - 60px);">
+<div class="grid grid-row-[auto_1fr] lg:max-h-[calc(100dvh-60px)] max-h-[100dvh]">
 	<AppBar background={"bg-surface-700"}>
 		<svelte:fragment slot="lead">
 			<a class="lg:hidden flex content-center" href="/channels/@me">
@@ -137,7 +138,7 @@
 		<h5 class="text-lg">Chat</h5>
 	</AppBar>
     <!-- Conversation -->
-    <section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4`}>
+    <section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4 h-full`}>
         {#each messageFeed ?? [] as bubble}
             {#if bubble.host === false}
                 <div class="grid grid-cols-[auto_1fr] gap-2">
@@ -175,7 +176,7 @@
 				bind:this={elemMessageTextArea}
 				on:input={adjustTextAreaSize}
                 on:keydown={onPromptKeydown}
-                class="bg-transparent border-0 ring-0 resize-none h-10 max-h-[256px]"
+                class="bg-transparent border-0 ring-0 resize-none h-10 max-h-[200px] lg:max-h-[50dvh]"
                 name="prompt"
                 id="prompt"
                 placeholder="Write a message..."
