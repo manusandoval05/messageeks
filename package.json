@@ -47,6 +47,7 @@
     "@floating-ui/dom": "1.6.7",
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.44.4",
-    "highlight.js": "11.10.0"
+    "highlight.js": "11.10.0",
+    "katex": "^0.16.11"
   }
 }

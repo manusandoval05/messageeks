@@ -3,7 +3,6 @@
     import { AppBar, Avatar } from "@skeletonlabs/skeleton";
 	import { hideAppRail } from "$lib/stores.js";
 
-
 	let cachedUserIds: any = {}
 	
 	export let data;
