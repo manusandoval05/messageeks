@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { AppBar, Avatar } from "@skeletonlabs/skeleton";
 	import { hideAppRail } from "$lib/stores.js";
+	import katex from 'katex';
 
 	let cachedUserIds: any = {}
 	
@@ -34,6 +35,7 @@
 	$: messageFeed = conversation_messages ? conversation_messages.map(message => {
 		return {
 			...message,
+			html_content: constructMessageHTML(message.content),
 			host: message.sender_id === profile_id,
 			color: 'variant-soft-primary',
 			timestamp: new Date(message.created_at)
@@ -48,8 +50,10 @@
 	let currentMessage = '';
 
 	const handleNewMessage = (payload: any) => {
+
 		const newMessage = {
 			...payload.new,
+			html_content: constructMessageHTML(payload.new.content),
 			host: payload.new.sender_id === profile_id,
 			color: 'variant-soft-primary',
 			timestamp: new Date(payload.new.created_at)
@@ -66,6 +70,29 @@
 			scrollChatBottom('smooth');
 		}, 0);
 	}
+	function constructMessageHTML(text: string){
+		const mathExpressionRegex = /\$\$(.*?)\$\$/g;
+
+		const matches = [...text.matchAll(mathExpressionRegex)];
+
+		const results = matches.map(match => {
+			const mathExpression = match[1];
+
+			const HTMLElement = katex.renderToString(mathExpression, {
+    			throwOnError: false,
+				displayMode: true
+			});
+
+			return [match[0], HTMLElement];
+		});
+		const finalString = results.reduce((accumulator, result) => {
+			console.log(accumulator);
+			return accumulator.replace(result[0], result[1]);
+		}, text)
+
+		return finalString;
+	}
+
 	function adjustTextAreaSize(){
 		elemMessageTextArea.style.height = "auto";
 		elemMessageTextArea.style.height = `${elemMessageTextArea.scrollHeight}px`;	
@@ -82,6 +109,7 @@
 	}
 	
 	async function addMessage() {
+
 		const { error } = await supabase
 			.from("conversation_messages")
 			.insert({
@@ -141,6 +169,9 @@
 			.subscribe();
 	});
 </script>
+<svelte:head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+</svelte:head>
 <div class="grid grid-row-[auto_1fr] lg:max-h-[calc(100dvh-60px)] max-h-[100dvh]">
 	<AppBar background={"bg-surface-700"}>
 		<svelte:fragment slot="lead">
@@ -163,7 +194,9 @@
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
                             <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                         </header>
-                        <p class="break-words break-all">{bubble.content}</p>
+                        <div>
+							{@html bubble.html_content}
+						</div>
                     </div>
                 </div>
             {:else}
@@ -174,7 +207,9 @@
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
                             <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                         </header>
-                        <p class="break-words break-all">{bubble.content}</p>
+                        <div>
+							{@html bubble.html_content}
+						</div>
                     </div>
                 </div>
             {/if}
