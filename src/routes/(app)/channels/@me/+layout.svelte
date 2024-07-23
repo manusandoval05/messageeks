@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Avatar } from '@skeletonlabs/skeleton';
+	import { hideAppRail } from '$lib/stores.js';
 
 	import { onMount } from 'svelte';
 	// Types
@@ -12,13 +13,13 @@
 	export let data;
 	$: ({ userConversations, username, activeConversationId } = data);
 
-	
+	$: if(!activeConversationId) hideAppRail.set(false);
 </script>
 
 <section class="card w-full h-full">
 	<div class="chat w-full h-full grid grid-cols-1 lg:grid-cols-[30%_1fr]">
 		<!-- Navigation -->
-		<div class="hidden lg:grid grid-rows-[auto_1fr_auto] border-r border-surface-500/30">
+		<div class:hidden={$hideAppRail} class="lg:grid grid-rows-[auto_1fr_auto] border-r border-surface-500/30">
 			<!-- Header -->
 			<header class="border-b border-surface-500/30 p-4">
 				<input class="input" type="search" placeholder="Search..." />
