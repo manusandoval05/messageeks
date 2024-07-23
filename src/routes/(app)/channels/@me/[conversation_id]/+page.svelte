@@ -40,7 +40,7 @@
 
     let elemChat: HTMLElement;
 	let elemMessageTextArea: HTMLTextAreaElement;
-	let elemMessageTextHeight;
+
     // Messages
 
 	let currentMessage = '';
@@ -96,6 +96,13 @@
 
 	function onPromptKeydown(event: KeyboardEvent): void {
 		adjustTextAreaSize();
+		if (['Enter'].includes(event.code) && event.shiftKey) {
+			event.preventDefault();
+			currentMessage += "\n"
+			adjustTextAreaSize();
+			return;
+		}
+
 		if (['Enter'].includes(event.code)) {
 			event.preventDefault();
 			addMessage();
