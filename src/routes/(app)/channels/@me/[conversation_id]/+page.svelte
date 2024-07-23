@@ -22,7 +22,10 @@
 					.select("display_name")
 					.eq("id", message.sender_id);
 				
-				if(error) return;
+				if(error){
+					console.log(error);
+					return;
+				}
 
 				cachedUserIds[message.sender_id] = data[0].display_name;
 				cachedUserIds = cachedUserIds;

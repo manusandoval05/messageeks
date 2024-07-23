@@ -8,7 +8,10 @@ export const load = async({ parent, params }) => {
         .select("id, sender_username, receiver_username")
         .or(`sender_username.eq.${username},receiver_username.eq.${username}`);
     
-    if(userConversationsRequest.error) return;
+    if(userConversationsRequest.error){
+        console.log(userConversationsRequest.error);
+        return;
+    }
 
     return { 
         userConversations: userConversationsRequest.data,
