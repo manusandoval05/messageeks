@@ -34,10 +34,17 @@
 								? 'variant-filled-primary'
 								: 'bg-surface-hover-token'}"
 						>
-							<Avatar initials={conversation.sender_username === username ?  conversation.receiver_username.substring(0, 2) : conversation.sender_username.substring(0, 2)} width="w-8" />
-							<span class="flex-1 text-start">
-								{ conversation.sender_username === username ? conversation.receiver_username.slice(0, -5) : conversation.sender_username.slice(0, -5) }
-							</span>
+							{#if !conversation.sender_username || !conversation.receiver_username}
+								<Avatar  initials={"DU"} width="w-8" />
+								<span class="flex-1 text-start">
+									Deleted User
+								</span>
+							{:else}
+								<Avatar initials={conversation.sender_username === username ?  conversation.receiver_username.substring(0, 2) : conversation.sender_username.substring(0, 2)} width="w-8" />
+								<span class="flex-1 text-start">
+									{ conversation.sender_username === username ? conversation.receiver_username.slice(0, -5) : conversation.sender_username.slice(0, -5) }
+								</span>
+							{/if}
 						</a>
 					{/each}
 				</div>
