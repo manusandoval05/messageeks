@@ -158,7 +158,7 @@
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
                             <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                         </header>
-                        <p>{bubble.content}</p>
+                        <p class="break-words break-all">{bubble.content}</p>
                     </div>
                 </div>
             {:else}
@@ -169,7 +169,7 @@
                             <p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
                             <small class="opacity-50">{bubble.timestamp.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                         </header>
-                        <p>{bubble.content}</p>
+                        <p class="break-words break-all">{bubble.content}</p>
                     </div>
                 </div>
             {/if}
