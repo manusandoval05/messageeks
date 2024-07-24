@@ -9,6 +9,7 @@
 		Avatar
 	} from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
+	import { hideAppRail } from '$lib/stores';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -43,7 +44,7 @@
 	/>
 </svelte:head>
 <!-- App Shell -->
-<AppShell>
+<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? 'hidden' : ''}`}>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar>
@@ -51,6 +52,13 @@
 				<strong class="text-xl uppercase">Messageeks</strong>
 			</svelte:fragment>
 		</AppBar>
+		<div class="hidden lg:block">
+			<AppBar>
+				<svelte:fragment slot="lead">
+					<strong class="text-xl uppercase">Messageeks</strong>
+				</svelte:fragment>
+			</AppBar>
+		</div>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>

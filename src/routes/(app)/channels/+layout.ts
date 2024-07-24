@@ -9,7 +9,10 @@ export const load = async({ parent }) => {
         .eq("user_id", user.id);
 
     
-    if(usernameRequest.error) return
+    if(usernameRequest.error){
+        console.log(usernameRequest.error);
+        return;   
+    }
 
     return { 
         username: usernameRequest.data[0].username as string,
