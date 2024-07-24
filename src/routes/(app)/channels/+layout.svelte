@@ -10,6 +10,8 @@
 	} from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { hideAppRail } from '$lib/stores';
+	import { popup } from '@skeletonlabs/skeleton';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -35,6 +37,15 @@
 	export let data;
 
 	$: ({ supabase, display_name } = data);
+
+	const popupFeatured: PopupSettings = {
+		// Represents the type of event that opens/closed the popup
+		event: 'focus-blur',
+		// Matches the data-popup value on your popup element
+		target: 'popupFeatured',
+		// Defines which side of your trigger the popup will appear
+		placement: 'bottom'
+	};
 </script>
 
 <svelte:head>
@@ -83,13 +94,17 @@
 			<svelte:fragment slot="trail">
 				<AppRailTile bind:group={currentTile} name="profile-tile" value={NaN}>
 					<div class="flex justify-center">
-						<button>
+						<button use:popup={popupFeatured}>
 							<Avatar
 								border="border-4 border-surface-300-600-token hover:!border-primary-500"
 								cursor="cursor-pointer"
 								initials={display_name?.substring(0, 2)}
 							/>
 						</button>
+					</div>
+
+					<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
+						<a href="/logout"><button class="btn variant-filled-primary">logout</button></a>
 					</div>
 				</AppRailTile>
 			</svelte:fragment>
