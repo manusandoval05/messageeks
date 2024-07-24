@@ -1,8 +1,17 @@
 <script lang="ts">
 	import '../../../app.postcss';
-	import { AppShell, AppBar, AppRail, AppRailAnchor, AppRailTile, Avatar } from '@skeletonlabs/skeleton';
+	import {
+		AppShell,
+		AppBar,
+		AppRail,
+		AppRailAnchor,
+		AppRailTile,
+		Avatar
+	} from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { hideAppRail } from '$lib/stores';
+	import { popup } from '@skeletonlabs/skeleton';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -27,15 +36,33 @@
 	let currentTile = 0;
 	export let data;
 
-	$: ({ supabase, display_name } = data); 
+	$: ({ supabase, display_name } = data);
+
+	const popupFeatured: PopupSettings = {
+		// Represents the type of event that opens/closed the popup
+		event: 'focus-blur',
+		// Matches the data-popup value on your popup element
+		target: 'popupFeatured',
+		// Defines which side of your trigger the popup will appear
+		placement: 'bottom'
+	};
 </script>
+
 <svelte:head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+	/>
 </svelte:head>
 <!-- App Shell -->
-<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? "hidden": ''}`}>
+<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? 'hidden' : ''}`}>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
+		<AppBar>
+			<svelte:fragment slot="lead">
+				<strong class="text-xl uppercase">Messageeks</strong>
+			</svelte:fragment>
+		</AppBar>
 		<div class="hidden lg:block">
 			<AppBar>
 				<svelte:fragment slot="lead">
@@ -46,30 +73,38 @@
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<AppRail>
-			<AppRailAnchor href="/channels/@me/" selected={$page.url.pathname.startsWith("/channels/@me")}>
+			<AppRailAnchor
+				href="/channels/@me/"
+				selected={$page.url.pathname.startsWith('/channels/@me')}
+			>
 				<svelte:fragment slot="lead">
-					<span class="material-symbols-outlined">
-						person
-					</span>
+					<span class="material-symbols-outlined"> person </span>
 				</svelte:fragment>
 				<span>Conversar</span>
 			</AppRailAnchor>
-			<AppRailAnchor href="/channels/groups/" selected={$page.url.pathname.startsWith("channels/groups")}>
+			<AppRailAnchor
+				href="/channels/groups/"
+				selected={$page.url.pathname.startsWith('channels/groups')}
+			>
 				<svelte:fragment slot="lead">
-					<span class="material-symbols-outlined">
-						groups
-					</span>
+					<span class="material-symbols-outlined"> groups </span>
 				</svelte:fragment>
 				<span>Grupos</span>
 			</AppRailAnchor>
 			<svelte:fragment slot="trail">
 				<AppRailTile bind:group={currentTile} name="profile-tile" value={NaN}>
 					<div class="flex justify-center">
-						<Avatar
-							border="border-4 border-surface-300-600-token hover:!border-primary-500"
-							cursor="cursor-pointer"
-							initials={ display_name?.substring(0, 2)}
-						/>
+						<button use:popup={popupFeatured}>
+							<Avatar
+								border="border-4 border-surface-300-600-token hover:!border-primary-500"
+								cursor="cursor-pointer"
+								initials={display_name?.substring(0, 2)}
+							/>
+						</button>
+					</div>
+
+					<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
+						<a href="/logout"><button class="btn variant-filled-primary">logout</button></a>
 					</div>
 				</AppRailTile>
 			</svelte:fragment>
