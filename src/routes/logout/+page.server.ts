@@ -11,5 +11,5 @@ export const load = async({ locals: { supabase, user}}) => {
         throw errorHelper(400, "Failed to log out");
     };
 
-    throw redirect(303, "/auth/login");
+    throw redirect(303, "/");
 }
