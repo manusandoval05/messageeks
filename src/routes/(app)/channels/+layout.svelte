@@ -83,11 +83,13 @@
 			<svelte:fragment slot="trail">
 				<AppRailTile bind:group={currentTile} name="profile-tile" value={NaN}>
 					<div class="flex justify-center">
-						<Avatar
-							border="border-4 border-surface-300-600-token hover:!border-primary-500"
-							cursor="cursor-pointer"
-							initials={display_name?.substring(0, 2)}
-						/>
+						<button>
+							<Avatar
+								border="border-4 border-surface-300-600-token hover:!border-primary-500"
+								cursor="cursor-pointer"
+								initials={display_name?.substring(0, 2)}
+							/>
+						</button>
 					</div>
 				</AppRailTile>
 			</svelte:fragment>
