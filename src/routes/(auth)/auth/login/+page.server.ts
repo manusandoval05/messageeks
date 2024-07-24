@@ -17,11 +17,3 @@ export const actions = {
 		redirect(303, '/channels/@me');
 	}
 };
-export function load({ cookies }) {
-	const visited = cookies.get('visited');
-
-	cookies.set('visited', 'true', { path: '/', httpOnly: false, secure: false });
-	return {
-		visited
-	};
-}
