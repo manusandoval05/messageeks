@@ -3,6 +3,9 @@
 	import { AppBar, Avatar } from '@skeletonlabs/skeleton';
 	import { hideAppRail } from '$lib/stores.js';
 	import katex from 'katex';
+	import AsciiMathParser from 'asciimath2tex';
+
+	const parser = new AsciiMathParser();
 
 	let cachedUserIds: any = {};
 
@@ -71,10 +74,11 @@
 	};
 	function constructMessageHTML(text: string) {
 		// Required to only extract the math expression
-		const groupedMathExpressionRegex = /\$\$(.*?)\$\$/g;
-		const mathExpressionRegex = /\$\$.*?\$\$/g;
+		const mathExpressionRegex = /\$\$?.*?\$\$?/g;
 
-		const matches = [...text.matchAll(groupedMathExpressionRegex)];
+		// If matched it means it is a text expression between $$$$
+
+		const matches = text.match(mathExpressionRegex);
 
 		// Split with the regex and only keep the non-latex text
 		const splitText = text.split(mathExpressionRegex);
@@ -84,16 +88,31 @@
 			markdownToHtml(fragment)
 		);
 
-		const expressionsHTML = matches.map((match) => {
-			const mathExpression = match[1];
+		const expressionsHTML = matches
+			? matches.map((match) => {
+					const asciiMathRegex = /\$(.*?)\$/g;
+					const texRegex = /\$\$(.*?)\$\$/g;
 
-			const HTMLElement = katex.renderToString(mathExpression, {
-				throwOnError: false,
-				displayMode: true
-			});
+					let mathExpression = match;
 
-			return HTMLElement;
-		});
+					mathExpression = mathExpression.replace(texRegex, (_, expression) => {
+						return katex.renderToString(expression, {
+							displayMode: true,
+							throwOnError: false
+						});
+					});
+
+					mathExpression = mathExpression.replace(asciiMathRegex, (_, expression) => {
+						const tex = parser.parse(expression);
+						return katex.renderToString(tex, {
+							displayMode: true,
+							throwOnError: false
+						});
+					});
+
+					return mathExpression;
+				})
+			: [];
 
 		const finalString = markdownToHTMLFragments.reduce((accumulator, fragment, index) => {
 			return accumulator + fragment + (expressionsHTML[index] ?? '');
@@ -163,6 +182,8 @@
 	}
 
 	async function addMessage() {
+		if (!currentMessage) return;
+
 		const { error } = await supabase.from('conversation_messages').insert({
 			sender_id: profile_id,
 			conversation_id: conversation_id,
