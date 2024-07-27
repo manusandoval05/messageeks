@@ -70,11 +70,18 @@
 		}, 0);
 	};
 	function constructMessageHTML(text: string) {
-		const mathExpressionRegex = /\$\$(.*?)\$\$/g;
+		// Required to only extract the math expression
+		const groupedMathExpressionRegex = /\$\$(.*?)\$\$/g;
+		const mathExpressionRegex = /\$\$.*?\$\$/g;
 
-		const matches = [...text.matchAll(mathExpressionRegex)];
+		const matches = [...text.matchAll(groupedMathExpressionRegex)];
 
-		const results = matches.map((match) => {
+		// Split with the regex and only keep the non-latex text
+		const splitText = text.split(mathExpressionRegex);
+
+		const escapedTextFragments = splitText.map((fragment) => escapeHTML(fragment));
+
+		const expressionsHTML = matches.map((match) => {
 			const mathExpression = match[1];
 
 			const HTMLElement = katex.renderToString(mathExpression, {
@@ -82,12 +89,12 @@
 				displayMode: true
 			});
 
-			return [match[0], HTMLElement];
+			return HTMLElement;
 		});
-		const finalString = results.reduce((accumulator, result) => {
-			console.log(accumulator);
-			return accumulator.replace(result[0], result[1]);
-		}, text);
+
+		const finalString = escapedTextFragments.reduce((accumulator, fragment, index) => {
+			return accumulator + fragment + (expressionsHTML[index] ?? '');
+		}, '');
 
 		return finalString;
 	}
