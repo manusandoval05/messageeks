@@ -120,7 +120,6 @@
 		return html
 			.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
 			.replace(/"/g, '&quot;')
 			.replace(/'/g, '&#39;');
 	}
@@ -145,6 +144,9 @@
 
 		// Convert markdown links
 		html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2">$1</a>');
+
+		// Convert blockquotes
+		html = html.replace(/^> (.*$)/gim, '<blockquote class="blockquote">$1</blockquote>');
 
 		// Convert unordered lists
 		html = html.replace(/^\* (.*$)/gim, '<ul class="list-disc pl-4"><li>$1</li></ul>');
