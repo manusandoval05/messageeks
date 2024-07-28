@@ -9,6 +9,8 @@
 
 	let cachedUserIds: any = {};
 
+	let buttonShortcutCharacter = '';
+
 	export let data;
 
 	$: ({ conversation_messages, profile_id, supabase, conversation_id } = data);
@@ -72,6 +74,50 @@
 			scrollChatBottom('smooth');
 		}, 0);
 	};
+	function insertDollar() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		currentMessage = textBeforeCursor + '$$' + textAfterCursor;
+	}
+	function insertCurlies() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		currentMessage = textAfterCursor + '{}' + textAfterCursor;
+	}
+	function insertRightCurly() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		currentMessage = textAfterCursor + '}' + textAfterCursor;
+	}
+	function insertBackslash() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		currentMessage = textAfterCursor + '\\' + textAfterCursor;
+	}
 	function constructMessageHTML(text: string) {
 		// Required to only extract the math expression
 		const mathExpressionRegex = /\$\$?.*?\$\$?/g;
@@ -335,6 +381,12 @@
 			>
 				<span class="material-symbols-outlined"> send </span>
 			</button>
+		</div>
+		<div class="btn-group variant-ringed-surface mt-1">
+			<button on:click={insertCurlies}>&lbrace;</button>
+			<button on:click={insertRightCurly}>&rbrace;</button>
+			<button on:click={insertDollar}>$</button>
+			<button on:click={insertBackslash}>\</button>
 		</div>
 	</section>
 </div>
