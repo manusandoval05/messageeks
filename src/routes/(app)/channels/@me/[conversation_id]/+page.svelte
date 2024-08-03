@@ -9,6 +9,7 @@
 
 	let cachedUserIds: any = {};
 
+	let cursorPositiong;
 	let buttonShortcutCharacter = '';
 
 	export let data;
@@ -53,8 +54,6 @@
 
 	// Messages
 
-	let currentMessage = '';
-
 	const handleNewMessage = (payload: any) => {
 		const newMessage = {
 			...payload.new,
@@ -68,14 +67,16 @@
 		messageFeed = [...messageFeed, newMessage];
 
 		// Clear prompt
-		if (newMessage.host) currentMessage = '';
+		if (newMessage.host) elemMessageTextArea.value = '';
 		// Timeout prevents race condition
 		setTimeout(() => {
 			scrollChatBottom('smooth');
 		}, 0);
 	};
+
 	function insertDollar() {
 		const cursorPosition = elemMessageTextArea.selectionStart;
+		console.log(cursorPosition);
 
 		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
 		const textAfterCursor = elemMessageTextArea.value.substring(
@@ -83,7 +84,13 @@
 			elemMessageTextArea.value.length
 		);
 
-		currentMessage = textBeforeCursor + '$$' + textAfterCursor;
+		elemMessageTextArea.value = textBeforeCursor + '$$' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition + 1;
+
+		elemMessageTextArea.focus();
+		elemMessageTextArea.setSelectionRange(newCursorPosition, newCursorPosition);
+		console.log(elemMessageTextArea.selectionStart, elemMessageTextArea.selectionEnd);
 	}
 	function insertCurlies() {
 		const cursorPosition = elemMessageTextArea.selectionStart;
@@ -94,7 +101,11 @@
 			elemMessageTextArea.value.length
 		);
 
-		currentMessage = textAfterCursor + '{}' + textAfterCursor;
+		elemMessageTextArea.value = textBeforeCursor + '{}' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition + 1;
+		elemMessageTextArea.focus();
+		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
 	}
 	function insertRightCurly() {
 		const cursorPosition = elemMessageTextArea.selectionStart;
@@ -105,7 +116,11 @@
 			elemMessageTextArea.value.length
 		);
 
-		currentMessage = textAfterCursor + '}' + textAfterCursor;
+		elemMessageTextArea.value = textBeforeCursor + '}' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition;
+		elemMessageTextArea.focus();
+		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
 	}
 	function insertBackslash() {
 		const cursorPosition = elemMessageTextArea.selectionStart;
@@ -116,7 +131,11 @@
 			elemMessageTextArea.value.length
 		);
 
-		currentMessage = textAfterCursor + '\\' + textAfterCursor;
+		elemMessageTextArea.value = textBeforeCursor + '\\' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition + 1;
+		elemMessageTextArea.focus();
+		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
 	}
 	function constructMessageHTML(text: string) {
 		// Required to only extract the math expression
@@ -228,12 +247,12 @@
 	}
 
 	async function addMessage() {
-		if (!currentMessage) return;
+		if (!elemMessageTextArea.value) return;
 
 		const { error } = await supabase.from('conversation_messages').insert({
 			sender_id: profile_id,
 			conversation_id: conversation_id,
-			content: currentMessage
+			content: elemMessageTextArea.value
 		});
 
 		if (error) {
@@ -246,7 +265,7 @@
 		adjustTextAreaSize();
 		if (['Enter'].includes(event.code) && event.shiftKey) {
 			event.preventDefault();
-			currentMessage += '\n';
+			elemMessageTextArea.value += '\n';
 			adjustTextAreaSize();
 			return;
 		}
@@ -365,7 +384,6 @@
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
 			<button class="input-group-shim">+</button>
 			<textarea
-				bind:value={currentMessage}
 				bind:this={elemMessageTextArea}
 				on:input={adjustTextAreaSize}
 				on:keydown={onPromptKeydown}
@@ -375,10 +393,7 @@
 				placeholder="Write a message..."
 				rows="1"
 			></textarea>
-			<button
-				class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'}
-				on:click={addMessage}
-			>
+			<button on:click={addMessage}>
 				<span class="material-symbols-outlined"> send </span>
 			</button>
 		</div>
