@@ -393,7 +393,10 @@
 				placeholder="Write a message..."
 				rows="1"
 			></textarea>
-			<button on:click={addMessage}>
+			<button
+				on:click={addMessage}
+				class={elemMessageTextArea?.value ? 'variant-filled-primary' : 'input-group-shim'}
+			>
 				<span class="material-symbols-outlined"> send </span>
 			</button>
 		</div>
