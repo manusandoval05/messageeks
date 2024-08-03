@@ -3,8 +3,14 @@
 	import { AppBar, Avatar } from '@skeletonlabs/skeleton';
 	import { hideAppRail } from '$lib/stores.js';
 	import katex from 'katex';
+	import AsciiMathParser from 'asciimath2tex';
+
+	const parser = new AsciiMathParser();
 
 	let cachedUserIds: any = {};
+
+	let cursorPositiong;
+	let buttonShortcutCharacter = '';
 
 	export let data;
 
@@ -48,8 +54,6 @@
 
 	// Messages
 
-	let currentMessage = '';
-
 	const handleNewMessage = (payload: any) => {
 		const newMessage = {
 			...payload.new,
@@ -63,36 +67,119 @@
 		messageFeed = [...messageFeed, newMessage];
 
 		// Clear prompt
-		if (newMessage.host) currentMessage = '';
+		if (newMessage.host) elemMessageTextArea.value = '';
 		// Timeout prevents race condition
 		setTimeout(() => {
 			scrollChatBottom('smooth');
 		}, 0);
 	};
+
+	function insertDollar() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+		console.log(cursorPosition);
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		elemMessageTextArea.value = textBeforeCursor + '$$' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition + 1;
+
+		elemMessageTextArea.focus();
+		elemMessageTextArea.setSelectionRange(newCursorPosition, newCursorPosition);
+		console.log(elemMessageTextArea.selectionStart, elemMessageTextArea.selectionEnd);
+	}
+	function insertCurlies() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		elemMessageTextArea.value = textBeforeCursor + '{}' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition + 1;
+		elemMessageTextArea.focus();
+		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
+	}
+	function insertRightCurly() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		elemMessageTextArea.value = textBeforeCursor + '}' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition;
+		elemMessageTextArea.focus();
+		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
+	}
+	function insertBackslash() {
+		const cursorPosition = elemMessageTextArea.selectionStart;
+
+		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
+		const textAfterCursor = elemMessageTextArea.value.substring(
+			cursorPosition,
+			elemMessageTextArea.value.length
+		);
+
+		elemMessageTextArea.value = textBeforeCursor + '\\' + textAfterCursor;
+
+		const newCursorPosition = cursorPosition + 1;
+		elemMessageTextArea.focus();
+		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
+	}
 	function constructMessageHTML(text: string) {
 		// Required to only extract the math expression
-		const groupedMathExpressionRegex = /\$\$(.*?)\$\$/g;
-		const mathExpressionRegex = /\$\$.*?\$\$/g;
+		const mathExpressionRegex = /\$\$?.*?\$\$?/g;
 
-		const matches = [...text.matchAll(groupedMathExpressionRegex)];
+		// If matched it means it is a text expression between $$$$
+
+		const matches = text.match(mathExpressionRegex);
 
 		// Split with the regex and only keep the non-latex text
 		const splitText = text.split(mathExpressionRegex);
-
 		const escapedTextFragments = splitText.map((fragment) => escapeHTML(fragment));
+		// After escaping, it is safe to transform the mardown into HTML
+		const markdownToHTMLFragments = escapedTextFragments.map((fragment) =>
+			markdownToHtml(fragment)
+		);
 
-		const expressionsHTML = matches.map((match) => {
-			const mathExpression = match[1];
+		const expressionsHTML = matches
+			? matches.map((match) => {
+					const asciiMathRegex = /\$(.*?)\$/g;
+					const texRegex = /\$\$(.*?)\$\$/g;
 
-			const HTMLElement = katex.renderToString(mathExpression, {
-				throwOnError: false,
-				displayMode: true
-			});
+					let mathExpression = match;
 
-			return HTMLElement;
-		});
+					mathExpression = mathExpression.replace(texRegex, (_, expression) => {
+						return katex.renderToString(expression, {
+							displayMode: true,
+							throwOnError: false
+						});
+					});
 
-		const finalString = escapedTextFragments.reduce((accumulator, fragment, index) => {
+					mathExpression = mathExpression.replace(asciiMathRegex, (_, expression) => {
+						const tex = parser.parse(expression);
+						return katex.renderToString(tex, {
+							displayMode: true,
+							throwOnError: false
+						});
+					});
+
+					return mathExpression;
+				})
+			: [];
+
+		const finalString = markdownToHTMLFragments.reduce((accumulator, fragment, index) => {
 			return accumulator + fragment + (expressionsHTML[index] ?? '');
 		}, '');
 
@@ -117,16 +204,55 @@
 		return html
 			.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
 			.replace(/"/g, '&quot;')
 			.replace(/'/g, '&#39;');
 	}
+	function markdownToHtml(markdown: string) {
+		let html = markdown;
+
+		// Convert headers
+		html = html.replace(/^###### (.*$)/gim, '<h6 class="h6">$1</h6>');
+		html = html.replace(/^##### (.*$)/gim, '<h5 class="h5">$1</h5>');
+		html = html.replace(/^#### (.*$)/gim, '<h4 class="h4">$1</h4>');
+		html = html.replace(/^### (.*$)/gim, '<h3 class="h3">$1</h3>');
+		html = html.replace(/^## (.*$)/gim, '<h2 class="h2">$1</h2>');
+		html = html.replace(/^# (.*$)/gim, '<h1 class="h1">$1</h1>');
+
+		// Convert bold and italic
+		html = html.replace(/\*\*\*(.*)\*\*\*/gim, '<b><i>$1</i></b>');
+		html = html.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>');
+		html = html.replace(/\*(.*)\*/gim, '<i>$1</i>');
+
+		// Convert plain links
+		html = html.replace(/\bhttps?:\/\/\S+\b/gim, '<a class="anchor" href="$&">$&</a>');
+
+		// Convert markdown links
+		html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2">$1</a>');
+
+		// Convert blockquotes
+		html = html.replace(/^> (.*$)/gim, '<blockquote class="blockquote">$1</blockquote>');
+
+		// Convert unordered lists
+		html = html.replace(/^\* (.*$)/gim, '<ul class="list-disc pl-4"><li>$1</li></ul>');
+		html = html.replace(/<\/ul>\n<ul class="list-disc pl-4">/gim, '\n');
+
+		// Convert ordered lists
+		html = html.replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>');
+		html = html.replace(/<\/ol>\n<ol>/gim, '\n');
+
+		// Convert line breaks
+		// html = html.replace(/\n/gim, '<br>');
+
+		return html.trim();
+	}
 
 	async function addMessage() {
+		if (!elemMessageTextArea.value) return;
+
 		const { error } = await supabase.from('conversation_messages').insert({
 			sender_id: profile_id,
 			conversation_id: conversation_id,
-			content: currentMessage
+			content: elemMessageTextArea.value
 		});
 
 		if (error) {
@@ -139,7 +265,7 @@
 		adjustTextAreaSize();
 		if (['Enter'].includes(event.code) && event.shiftKey) {
 			event.preventDefault();
-			currentMessage += '\n';
+			elemMessageTextArea.value += '\n';
 			adjustTextAreaSize();
 			return;
 		}
@@ -258,7 +384,6 @@
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
 			<button class="input-group-shim">+</button>
 			<textarea
-				bind:value={currentMessage}
 				bind:this={elemMessageTextArea}
 				on:input={adjustTextAreaSize}
 				on:keydown={onPromptKeydown}
@@ -269,11 +394,17 @@
 				rows="1"
 			></textarea>
 			<button
-				class={currentMessage ? 'variant-filled-primary' : 'input-group-shim'}
 				on:click={addMessage}
+				class={elemMessageTextArea?.value ? 'variant-filled-primary' : 'input-group-shim'}
 			>
 				<span class="material-symbols-outlined"> send </span>
 			</button>
+		</div>
+		<div class="btn-group variant-ringed-surface mt-1">
+			<button on:click={insertCurlies}>&lbrace;</button>
+			<button on:click={insertRightCurly}>&rbrace;</button>
+			<button on:click={insertDollar}>$</button>
+			<button on:click={insertBackslash}>\</button>
 		</div>
 	</section>
 </div>
