@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { AppBar, Avatar } from '@skeletonlabs/skeleton';
+	import { AppBar, Avatar, getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { hideAppRail } from '$lib/stores.js';
 	import katex from 'katex';
 	import AsciiMathParser from 'asciimath2tex';
@@ -11,7 +11,18 @@
 
 	export let data;
 
-	$: ({ conversation_messages, profile_id, supabase, conversation_id } = data);
+	const toastStore = getToastStore();
+
+	$: ({
+		conversation_messages,
+		profile_id,
+		supabase,
+		conversation_id,
+		accepted_by_receiver,
+		username,
+		receiver_username,
+		sender_username
+	} = data);
 	$: conversation_messages?.sort((a, b) => a.id - b.id);
 	// Begin caching usernames
 	$: if (conversation_messages) {
@@ -245,6 +256,28 @@
 
 	async function addMessage() {
 		if (!elemMessageTextArea.value) return;
+
+		if (!accepted_by_receiver && receiver_username === username) {
+			const { error } = await supabase
+				.from('conversations')
+				.update({
+					accepted_by_receiver: true
+				})
+				.eq('id', conversation_id);
+			console.log(error);
+		}
+
+		if (
+			(conversation_messages?.length ?? 0 >= 5) &&
+			sender_username === username &&
+			!accepted_by_receiver
+		) {
+			const errorToast: ToastSettings = {
+				message: 'No puedes enviar más mensajes hasta que te hayan respondido',
+				background: 'variant-filled-error'
+			};
+			toastStore.trigger(errorToast);
+		}
 
 		const { error } = await supabase.from('conversation_messages').insert({
 			sender_id: profile_id,
