@@ -5,31 +5,6 @@
 	export let data;
 
 	$: ({ username, supabase } = data);
-
-	const toastStore = getToastStore();
-
-	const acceptedInviteToast: ToastSettings = {
-		message: 'Solicitud de amistad aceptada',
-		background: 'variant-filled-success'
-	};
-	const pendingInvitations = data.supabase
-		.from('conversations')
-		.select()
-		.eq('receiver_username', data.username)
-		.eq('accepted_by_receiver', false);
-
-	async function acceptInvitation(conversationId: number) {
-		const { error } = await supabase
-			.from('conversations')
-			.update({
-				accepted_by_receiver: true
-			})
-			.eq('id', conversationId);
-
-		if (error) console.log(error);
-
-		toastStore.trigger(acceptedInviteToast);
-	}
 </script>
 
 <div class="card">
@@ -61,7 +36,7 @@
 						type="text"
 						name="receiver_username"
 						required
-						placeholder="Se pueden enviar invitaciones de amistad por nombre de usuario..."
+						placeholder="Se puede iniciar una conversación con el nombre de usuario..."
 					/>
 					<button class="variant-filled-secondary">Añadir</button>
 				</div>

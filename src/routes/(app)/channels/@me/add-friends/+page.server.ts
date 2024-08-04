@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 
 export const actions = {
@@ -10,16 +10,16 @@ export const actions = {
         const receiver_username = data.get("receiver_username")?.toString();
         const sender_username  = data.get("sender_username")?.toString();
 
-        console.log(receiver_username); 
-        console.log(sender_username);
-
         const newConversationRequest = await supabase
             .from("conversations")
             .insert({
                 sender_username, 
                 receiver_username
-            });
+            })
+            .select();
         
-        console.log(newConversationRequest.error);
+        if(!newConversationRequest.error){
+            throw redirect(300, `/channels/@me/${newConversationRequest.data[0].id}`);
+        }
     }
 }
