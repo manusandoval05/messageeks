@@ -9,9 +9,6 @@
 
 	let cachedUserIds: any = {};
 
-	let cursorPositiong;
-	let buttonShortcutCharacter = '';
-
 	export let data;
 
 	$: ({ conversation_messages, profile_id, supabase, conversation_id } = data);

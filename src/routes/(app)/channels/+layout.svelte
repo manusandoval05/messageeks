@@ -10,7 +10,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { hideAppRail } from '$lib/stores';
-	import { popup } from '@skeletonlabs/skeleton';
+	import { popup, LightSwitch } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	// Highlight JS
@@ -98,7 +98,8 @@
 					</div>
 
 					<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
-						<a href="/logout"><button class="btn variant-filled-primary">logout</button></a>
+						<a class="variant-filled-primary" href="/logout">Logout</a>
+						<LightSwitch />
 					</div>
 				</AppRailTile>
 			</svelte:fragment>
