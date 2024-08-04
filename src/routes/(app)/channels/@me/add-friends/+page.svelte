@@ -67,29 +67,5 @@
 				</div>
 			</form>
 		</div>
-		{#await pendingInvitations}
-			<p>Cargando invitaciones...</p>
-		{:then invitations}
-			{#if !invitations.data?.length}
-				<h2 class="h2">No tienes solicitudes de amistad pendientes. Invita a alguien a charlar</h2>
-			{:else}
-				<h2 class="h2">Estas son tus solicitudes de amistad pendientes</h2>
-				<ul class="list">
-					{#each invitations.data ?? [] as invitation}
-						<li>
-							<Avatar initials={invitation.sender_username.substring(0, 2)} />
-							<span class="flex-auto">{invitation.sender_username}</span>
-							<button
-								on:click={async () => acceptInvitation(invitation.id)}
-								type="button"
-								class="btn-icon btn-icon-sm variant-filled"
-							>
-								<span class="material-symbols-outlined"> check </span>
-							</button>
-						</li>
-					{/each}
-				</ul>
-			{/if}
-		{/await}
 	</section>
 </div>
