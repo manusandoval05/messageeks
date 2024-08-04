@@ -9,10 +9,13 @@ export const actions = {
 
         const { error } = await supabase.auth.signInWithPassword({ email, password }); 
 
+        console.log(error);
+
         if(error){
             return {
-                error
-            }
+                email,
+                error: error.message
+            } 
         }
 
         redirect(303, "/channels/@me");

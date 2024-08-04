@@ -1,8 +1,25 @@
+<script lang="ts">
+	export let form;
+</script>
+
 <form class="space-y-6" action="?/login" method="POST">
+	{#if form?.error}
+		<aside class="alert variant-soft-error">
+			<!-- Icon -->
+			<div>
+				<span class="material-symbols-outlined"> error </span>
+			</div>
+			<!-- Message -->
+			<div class="alert-message">
+				<h3 class="h3">Las credenciales de inicio de sesión son inválidas</h3>
+			</div>
+		</aside>
+	{/if}
 	<div>
 		<label for="email" class="block text-sm font-medium leading-6">Email address</label>
 		<div class="mt-2">
 			<input
+				value={form?.email ?? ''}
 				id="email"
 				name="email"
 				type="email"
