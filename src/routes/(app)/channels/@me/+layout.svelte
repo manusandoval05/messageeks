@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { hideAppRail } from '$lib/stores.js';
-
-	import { onMount } from 'svelte';
 	// Types
 	interface Person {
 		id: number;
@@ -29,7 +27,12 @@
 			</header>
 			<!-- List -->
 			<div class="p-4 space-y-4 overflow-y-auto">
-				<small class="opacity-50">Contacts</small>
+				<div class="flex gap-3">
+					<p>Contactos</p>
+					<a class="btn-icon btn-sm variant-filled-surface" href="/channels/@me/add-friends">
+						<span class="material-symbols-outlined"> edit </span>
+					</a>
+				</div>
 				<div class="flex flex-col space-y-1">
 					{#each userConversations ?? [] as conversation}
 						<a

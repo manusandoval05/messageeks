@@ -1,12 +1,14 @@
 <script lang="ts">
 	import '../../../app.postcss';
 	import {
+		initializeStores,
 		AppShell,
 		AppBar,
 		AppRail,
 		AppRailAnchor,
 		AppRailTile,
-		Avatar
+		Avatar,
+		Toast
 	} from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { hideAppRail } from '$lib/stores';
@@ -36,6 +38,8 @@
 	let currentTile = 0;
 	export let data;
 
+	initializeStores();
+
 	$: ({ supabase, display_name } = data);
 
 	const popupFeatured: PopupSettings = {
@@ -54,6 +58,7 @@
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
+<Toast />
 <!-- App Shell -->
 <AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? 'hidden' : ''}`}>
 	<svelte:fragment slot="header">
@@ -98,7 +103,7 @@
 					</div>
 
 					<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
-						<a class="variant-filled-primary" href="/logout">Logout</a>
+						<a class="btn variant-filled-primary" href="/logout">Logout</a>
 						<LightSwitch />
 					</div>
 				</AppRailTile>

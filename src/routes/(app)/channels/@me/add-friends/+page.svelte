@@ -1,11 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Avatar } from '@skeletonlabs/skeleton';
+	import { Avatar, getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	export let data;
 
 	$: ({ username, supabase } = data);
 
+	const toastStore = getToastStore();
+
+	const acceptedInviteToast: ToastSettings = {
+		message: 'Solicitud de amistad aceptada',
+		background: 'variant-filled-success'
+	};
 	const pendingInvitations = data.supabase
 		.from('conversations')
 		.select()
@@ -13,7 +19,6 @@
 		.eq('accepted_by_receiver', false);
 
 	async function acceptInvitation(conversationId: number) {
-		console.log('running function');
 		const { error } = await supabase
 			.from('conversations')
 			.update({
@@ -21,7 +26,9 @@
 			})
 			.eq('id', conversationId);
 
-		console.log(error);
+		if (error) console.log(error);
+
+		toastStore.trigger(acceptedInviteToast);
 	}
 </script>
 
@@ -63,7 +70,7 @@
 		{#await pendingInvitations}
 			<p>Cargando invitaciones...</p>
 		{:then invitations}
-			{#if !invitations.data}
+			{#if !invitations.data?.length}
 				<h2 class="h2">No tienes solicitudes de amistad pendientes. Invita a alguien a charlar</h2>
 			{:else}
 				<h2 class="h2">Estas son tus solicitudes de amistad pendientes</h2>

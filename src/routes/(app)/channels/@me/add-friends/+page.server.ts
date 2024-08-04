@@ -17,8 +17,7 @@ export const actions = {
             .from("conversations")
             .insert({
                 sender_username, 
-                receiver_username, 
-                accepted_by_receiver: true
+                receiver_username
             });
         
         console.log(newConversationRequest.error);
