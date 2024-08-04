@@ -14,7 +14,7 @@ export const actions = {
         if(error){
             return {
                 email,
-                error: error.message
+                error: true
             } 
         }
 
