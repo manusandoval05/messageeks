@@ -83,7 +83,7 @@
 			</AppRailAnchor>
 			<AppRailAnchor
 				href="/channels/groups/"
-				selected={$page.url.pathname.startsWith('channels/groups')}
+				selected={$page.url.pathname.startsWith('/channels/groups')}
 			>
 				<svelte:fragment slot="lead">
 					<span class="material-symbols-outlined"> groups </span>
