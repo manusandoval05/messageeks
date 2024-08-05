@@ -1,17 +1,41 @@
 <script lang="ts">
-	import { Avatar } from '@skeletonlabs/skeleton';
+	import { Avatar, getModalStore } from '@skeletonlabs/skeleton';
 	import { hideAppRail } from '$lib/stores.js';
 	// Types
-	interface Person {
-		id: number;
-		avatar: number;
-		name: string;
-	}
+	import type { ModalSettings } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
+
+	const modalStore = getModalStore();
 
 	export let data;
-	$: ({ userGroups, activeGroupId } = data);
+	$: ({ userGroups, activeGroupId, supabase, user } = data);
 
 	$: if (!activeGroupId) hideAppRail.set(false);
+
+	const createGroupModal: ModalSettings = {
+		type: 'prompt',
+		// Data
+		title: 'Crear un grupo',
+		body: '¿Cuál será el nombre del grupo?',
+		// Populates the input value and attributes
+		value: 'Un muy genial grupo',
+		valueAttr: { type: 'text', maxlength: 64, required: true },
+		// Returns the updated response value
+		response: async (name: string) => {
+			if (!name) return;
+			const { data, error } = await supabase
+				.from('groups')
+				.insert({
+					name: name,
+					creator_id: user?.id
+				})
+				.select();
+
+			if (error) console.error(error);
+
+			goto(`/channels/groups/${data?.at(0).id}`);
+		}
+	};
 </script>
 
 <section class="card w-full h-full">
@@ -27,7 +51,11 @@
 			</header>
 			<!-- List -->
 			<div class="p-4 space-y-4 overflow-y-auto">
-				<button type="button" class="btn variant-filled">
+				<button
+					on:click={() => modalStore.trigger(createGroupModal)}
+					type="button"
+					class="btn variant-filled"
+				>
 					<span class="material-symbols-outlined"> add_circle </span>
 					<span>Crear un grupo</span>
 				</button>
@@ -40,7 +68,7 @@
 				<div class="flex flex-col space-y-1">
 					{#each userGroups ?? [] as group}
 						<a
-							href={`/channels/@me/${group.id}`}
+							href={`/channels/groups/${group.id}`}
 							class="btn w-full flex items-center space-x-4 {group.id === Number(activeGroupId)
 								? 'variant-filled-primary'
 								: 'bg-surface-hover-token'}"
