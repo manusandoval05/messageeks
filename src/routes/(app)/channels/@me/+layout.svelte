@@ -27,10 +27,10 @@
 			</header>
 			<!-- List -->
 			<div class="p-4 space-y-4 overflow-y-auto">
-				<button type="button" class="btn variant-filled">
+				<a href="/channels/@me/add-friends" class="btn variant-filled">
 					<span class="material-symbols-outlined"> add_circle </span>
 					<span>Agregar contacto</span>
-				</button>
+				</a>
 
 				<hr class="!border-t-2" />
 				<div class="flex gap-3">
