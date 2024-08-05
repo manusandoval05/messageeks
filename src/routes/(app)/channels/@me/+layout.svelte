@@ -27,11 +27,14 @@
 			</header>
 			<!-- List -->
 			<div class="p-4 space-y-4 overflow-y-auto">
+				<button type="button" class="btn variant-filled">
+					<span class="material-symbols-outlined"> add_circle </span>
+					<span>Agregar contacto</span>
+				</button>
+
+				<hr class="!border-t-2" />
 				<div class="flex gap-3">
 					<p>Contactos</p>
-					<a class="btn-icon btn-sm variant-filled-surface" href="/channels/@me/add-friends">
-						<span class="material-symbols-outlined"> edit </span>
-					</a>
 				</div>
 				<div class="flex flex-col space-y-1">
 					{#each userConversations ?? [] as conversation}
