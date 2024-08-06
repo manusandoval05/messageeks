@@ -23,7 +23,7 @@
 		// Returns the updated response value
 		response: async (name: string) => {
 			if (!name) return;
-			const { data, error } = await supabase
+			const createGroupRequest = await supabase
 				.from('groups')
 				.insert({
 					name: name,
@@ -31,9 +31,21 @@
 				})
 				.select();
 
-			if (error) console.error(error);
+			if (createGroupRequest.error) {
+				console.error(createGroupRequest.error);
+				return;
+			}
 
-			goto(`/channels/groups/${data?.at(0).id}`);
+			const addUserRequest = await supabase.from('group_members').insert({
+				group_id: createGroupRequest.data[0].id,
+				user_id: user?.id
+			});
+
+			if (addUserRequest.error) {
+				console.error(addUserRequest.error);
+				return;
+			}
+			goto(`/channels/groups/${createGroupRequest.data?.at(0).id}`);
 		}
 	};
 </script>
