@@ -10,7 +10,7 @@
 	export let data;
 
 	export let messageFeed: any[] = [];
-	$: ({ supabase, group_id, profile_id } = data);
+	$: ({ supabase, group_id, user } = data);
 
 	$: if (messageFeed.length) {
 		(async () => {
@@ -53,13 +53,13 @@
 		const newMessage = {
 			...payload.new,
 			html_content: constructMessageHTML(payload.new.content),
-			host: payload.new.sender_id === profile_id,
+			host: payload.new.sender_id === user?.id,
 			color: 'variant-soft-primary',
 			timestamp: new Date(payload.new.created_at)
 		};
 
 		// Update the message feed
-		messageFeed = [...messageFeed, newMessage];
+		messageFeed = [...messageFeed, payload.new];
 
 		// Timeout prevents race condition
 		setTimeout(() => {
@@ -129,13 +129,14 @@
 					width="w-12"
 				/>
 				<div
-					class:variant-soft={!bubble.host}
-					class="card p-4 rounded-tl-none space-y-2 {bubble.host ? bubble.color : ''}"
+					class:variant-soft={!(bubble.sender_id === user?.id)}
+					class:variant-soft-primary={bubble.sender_id === user?.id}
+					class="card p-4 rounded-tl-none space-y-2"
 				>
 					<header class="flex justify-between items-center">
 						<p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
 						<small class="opacity-50"
-							>{bubble.timestamp.toLocaleString('en-US', {
+							>{new Date(bubble.created_at).toLocaleString('en-US', {
 								hour: 'numeric',
 								minute: 'numeric',
 								hour12: true
@@ -143,7 +144,7 @@
 						>
 					</header>
 					<div>
-						{@html bubble.html_content}
+						{@html constructMessageHTML(bubble.content)}
 					</div>
 				</div>
 			</div>
