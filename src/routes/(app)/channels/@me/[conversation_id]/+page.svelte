@@ -172,7 +172,7 @@
 	</AppBar>
 	<!-- Conversation -->
 	<section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4 h-full`}>
-		{#each messageFeed ?? [] as bubble}
+		{#each messageFeed ?? [] as bubble (bubble.id)}
 			<div class="grid grid-cols-[auto_1fr] gap-2">
 				<Avatar
 					initials={cachedUserIds[bubble.sender_id]

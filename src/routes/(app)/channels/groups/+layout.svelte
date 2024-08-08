@@ -8,9 +8,9 @@
 	const modalStore = getModalStore();
 
 	export let data;
-	$: ({ userGroups, activeGroupId, supabase, user } = data);
+	$: ({ userGroups, group_id, supabase, user } = data);
 
-	$: if (!activeGroupId) hideAppRail.set(false);
+	$: if (!group_id) hideAppRail.set(false);
 
 	const createGroupModal: ModalSettings = {
 		type: 'prompt',
@@ -43,6 +43,14 @@
 
 			if (addUserRequest.error) {
 				console.error(addUserRequest.error);
+				return;
+			}
+			const createGroupInviteRequest = await supabase.from('group_invites').insert({
+				group_id: createGroupRequest.data[0].id
+			});
+
+			if (createGroupInviteRequest.error) {
+				console.error(createGroupInviteRequest.error);
 				return;
 			}
 			goto(`/channels/groups/${createGroupRequest.data?.at(0).id}`);
@@ -81,7 +89,7 @@
 					{#each userGroups ?? [] as group}
 						<a
 							href={`/channels/groups/${group.id}`}
-							class="btn w-full flex items-center space-x-4 {group.id === Number(activeGroupId)
+							class="btn w-full flex items-center space-x-4 {group.id === Number(group_id)
 								? 'variant-filled-primary'
 								: 'bg-surface-hover-token'}"
 						>
