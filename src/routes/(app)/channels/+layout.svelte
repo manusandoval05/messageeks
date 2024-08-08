@@ -104,7 +104,7 @@
 						</button>
 					</div>
 
-					<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
+					<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupFeatured">
 						<a class="btn variant-filled-primary" href="/logout">Logout</a>
 						<LightSwitch />
 					</div>

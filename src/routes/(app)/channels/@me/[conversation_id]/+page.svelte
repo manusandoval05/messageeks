@@ -82,7 +82,7 @@
 		}, 0);
 	};
 
-	function insertDollar() {
+	function insertAutocompleteText(textToInsert: string) {
 		const cursorPosition = elemMessageTextArea.selectionStart;
 		console.log(cursorPosition);
 
@@ -92,7 +92,7 @@
 			elemMessageTextArea.value.length
 		);
 
-		elemMessageTextArea.value = textBeforeCursor + '$$' + textAfterCursor;
+		elemMessageTextArea.value = textBeforeCursor + textToInsert + textAfterCursor;
 
 		const newCursorPosition = cursorPosition + 1;
 
@@ -100,51 +100,7 @@
 		elemMessageTextArea.setSelectionRange(newCursorPosition, newCursorPosition);
 		console.log(elemMessageTextArea.selectionStart, elemMessageTextArea.selectionEnd);
 	}
-	function insertCurlies() {
-		const cursorPosition = elemMessageTextArea.selectionStart;
 
-		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
-		const textAfterCursor = elemMessageTextArea.value.substring(
-			cursorPosition,
-			elemMessageTextArea.value.length
-		);
-
-		elemMessageTextArea.value = textBeforeCursor + '{}' + textAfterCursor;
-
-		const newCursorPosition = cursorPosition + 1;
-		elemMessageTextArea.focus();
-		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
-	}
-	function insertRightCurly() {
-		const cursorPosition = elemMessageTextArea.selectionStart;
-
-		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
-		const textAfterCursor = elemMessageTextArea.value.substring(
-			cursorPosition,
-			elemMessageTextArea.value.length
-		);
-
-		elemMessageTextArea.value = textBeforeCursor + '}' + textAfterCursor;
-
-		const newCursorPosition = cursorPosition;
-		elemMessageTextArea.focus();
-		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
-	}
-	function insertBackslash() {
-		const cursorPosition = elemMessageTextArea.selectionStart;
-
-		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
-		const textAfterCursor = elemMessageTextArea.value.substring(
-			cursorPosition,
-			elemMessageTextArea.value.length
-		);
-
-		elemMessageTextArea.value = textBeforeCursor + '\\' + textAfterCursor;
-
-		const newCursorPosition = cursorPosition + 1;
-		elemMessageTextArea.focus();
-		elemMessageTextArea.selectionStart = elemMessageTextArea.selectionEnd = newCursorPosition;
-	}
 	function constructMessageHTML(text: string) {
 		// Required to only extract the math expression
 		const mathExpressionRegex = /\$\$?.*?\$\$?/g;
@@ -431,10 +387,10 @@
 			</button>
 		</div>
 		<div class="btn-group variant-ringed-surface mt-1">
-			<button on:click={insertCurlies}>&lbrace;</button>
-			<button on:click={insertRightCurly}>&rbrace;</button>
-			<button on:click={insertDollar}>$</button>
-			<button on:click={insertBackslash}>\</button>
+			<button on:click={() => insertAutocompleteText('{}')}>&lbrace;</button>
+			<button on:click={() => insertAutocompleteText('}')}>&rbrace;</button>
+			<button on:click={() => insertAutocompleteText('$$')}>$</button>
+			<button on:click={() => insertAutocompleteText('\\')}>\</button>
 		</div>
 	</section>
 </div>
