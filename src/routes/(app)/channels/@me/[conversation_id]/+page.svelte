@@ -173,55 +173,32 @@
 	<!-- Conversation -->
 	<section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4 h-full`}>
 		{#each messageFeed ?? [] as bubble}
-			{#if bubble.host === false}
-				<div class="grid grid-cols-[auto_1fr] gap-2">
-					<Avatar
-						initials={cachedUserIds[bubble.sender_id]
-							? cachedUserIds[bubble.sender_id].substring(0, 2)
-							: ''}
-						width="w-12"
-					/>
-					<div class="card p-4 variant-soft rounded-tl-none space-y-2">
-						<header class="flex justify-between items-center">
-							<p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
-							<small class="opacity-50"
-								>{bubble.timestamp.toLocaleString('en-US', {
-									hour: 'numeric',
-									minute: 'numeric',
-									hour12: true
-								})}</small
-							>
-						</header>
-						<div>
-							{@html bubble.html_content}
-						</div>
+			<div class="grid grid-cols-[auto_1fr] gap-2">
+				<Avatar
+					initials={cachedUserIds[bubble.sender_id]
+						? cachedUserIds[bubble.sender_id].substring(0, 2)
+						: ''}
+					width="w-12"
+				/>
+				<div
+					class:variant-soft={!bubble.host}
+					class="card p-4 rounded-tl-none space-y-2 {bubble.host ? bubble.color : ''}"
+				>
+					<header class="flex justify-between items-center">
+						<p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
+						<small class="opacity-50"
+							>{bubble.timestamp.toLocaleString('en-US', {
+								hour: 'numeric',
+								minute: 'numeric',
+								hour12: true
+							})}</small
+						>
+					</header>
+					<div>
+						{@html bubble.html_content}
 					</div>
 				</div>
-			{:else}
-				<div class="grid grid-cols-[auto_1fr] gap-2">
-					<Avatar
-						initials={cachedUserIds[bubble.sender_id]
-							? cachedUserIds[bubble.sender_id].substring(0, 2)
-							: ''}
-						width="w-12"
-					/>
-					<div class="card p-4 rounded-tl-none space-y-2 {bubble.color}">
-						<header class="flex justify-between items-center">
-							<p class="font-bold">{cachedUserIds[bubble.sender_id]}</p>
-							<small class="opacity-50"
-								>{bubble.timestamp.toLocaleString('en-US', {
-									hour: 'numeric',
-									minute: 'numeric',
-									hour12: true
-								})}</small
-							>
-						</header>
-						<div>
-							{@html bubble.html_content}
-						</div>
-					</div>
-				</div>
-			{/if}
+			</div>
 		{/each}
 	</section>
 	<!-- Prompt -->
