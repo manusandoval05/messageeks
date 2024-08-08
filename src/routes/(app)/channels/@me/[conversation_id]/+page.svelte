@@ -3,6 +3,7 @@
 	import { AppBar, Avatar, getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { hideAppRail } from '$lib/stores.js';
 	import { constructMessageHTML } from '$lib';
+	import MessageInput from '$lib/Components/MessageInput.svelte';
 
 	let cachedUserIds: any = {};
 
@@ -55,7 +56,6 @@
 		: [];
 
 	let elemChat: HTMLElement;
-	let elemMessageTextArea: HTMLTextAreaElement;
 
 	// Messages
 
@@ -71,38 +71,11 @@
 		// Update the message feed
 		messageFeed = [...messageFeed, newMessage];
 
-		// Clear prompt
-		if (newMessage.host) elemMessageTextArea.value = '';
 		// Timeout prevents race condition
 		setTimeout(() => {
 			scrollChatBottom('smooth');
 		}, 0);
 	};
-
-	function insertAutocompleteText(textToInsert: string) {
-		const cursorPosition = elemMessageTextArea.selectionStart;
-		console.log(cursorPosition);
-
-		const textBeforeCursor = elemMessageTextArea.value.substring(0, cursorPosition);
-		const textAfterCursor = elemMessageTextArea.value.substring(
-			cursorPosition,
-			elemMessageTextArea.value.length
-		);
-
-		elemMessageTextArea.value = textBeforeCursor + textToInsert + textAfterCursor;
-
-		const newCursorPosition = cursorPosition + 1;
-
-		elemMessageTextArea.focus();
-		elemMessageTextArea.setSelectionRange(newCursorPosition, newCursorPosition);
-		console.log(elemMessageTextArea.selectionStart, elemMessageTextArea.selectionEnd);
-	}
-
-	function adjustTextAreaSize() {
-		elemMessageTextArea.style.height = 'auto';
-		elemMessageTextArea.style.height = `${elemMessageTextArea.scrollHeight}px`;
-	}
-
 	// For some reason, eslint thinks ScrollBehavior is undefined...
 	// eslint-disable-next-line no-undef
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
@@ -112,8 +85,8 @@
 	function getCurrentTimestamp(): string {
 		return new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 	}
-	async function addMessage() {
-		if (!elemMessageTextArea.value) return;
+	async function addMessage(event: any) {
+		const messageValue = event.detail.text;
 
 		if (!accepted_by_receiver && receiver_username === username) {
 			const { error } = await supabase
@@ -140,7 +113,7 @@
 		const { error } = await supabase.from('conversation_messages').insert({
 			sender_id: profile_id,
 			conversation_id: conversation_id,
-			content: elemMessageTextArea.value
+			content: messageValue
 		});
 
 		if (error) {
@@ -148,22 +121,6 @@
 			return;
 		}
 	}
-
-	function onPromptKeydown(event: KeyboardEvent): void {
-		adjustTextAreaSize();
-		if (['Enter'].includes(event.code) && event.shiftKey) {
-			event.preventDefault();
-			elemMessageTextArea.value += '\n';
-			adjustTextAreaSize();
-			return;
-		}
-
-		if (['Enter'].includes(event.code)) {
-			event.preventDefault();
-			addMessage();
-		}
-	}
-
 	// When DOM mounted, scroll to bottom
 	onMount(() => {
 		const mediaQuery = window.matchMedia('(min-width: 1024px)');
@@ -268,31 +225,6 @@
 		{/each}
 	</section>
 	<!-- Prompt -->
-	<section class="border-t border-surface-500/30 p-4">
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
-			<button class="input-group-shim">+</button>
-			<textarea
-				bind:this={elemMessageTextArea}
-				on:input={adjustTextAreaSize}
-				on:keydown={onPromptKeydown}
-				class="bg-transparent border-0 ring-0 resize-none h-10 max-h-[200px] lg:max-h-[50dvh]"
-				name="prompt"
-				id="prompt"
-				placeholder="Write a message..."
-				rows="1"
-			></textarea>
-			<button
-				on:click={addMessage}
-				class={elemMessageTextArea?.value ? 'variant-filled-primary' : 'input-group-shim'}
-			>
-				<span class="material-symbols-outlined"> send </span>
-			</button>
-		</div>
-		<div class="btn-group variant-ringed-surface mt-1">
-			<button on:click={() => insertAutocompleteText('{}')}>&lbrace;</button>
-			<button on:click={() => insertAutocompleteText('}')}>&rbrace;</button>
-			<button on:click={() => insertAutocompleteText('$$')}>$</button>
-			<button on:click={() => insertAutocompleteText('\\')}>\</button>
-		</div>
-	</section>
+
+	<MessageInput on:message={addMessage} />
 </div>

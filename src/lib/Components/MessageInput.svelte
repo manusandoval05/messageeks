@@ -11,6 +11,8 @@
 		dispatch('message', {
 			text: elemMessageTextArea.value
 		});
+		// Don't really like resetting the input before knowing the text has been sent. But, oh well
+		elemMessageTextArea.value = '';
 	}
 
 	function insertAutocompleteText(textToInsert: string) {
