@@ -13,6 +13,7 @@
 		});
 		// Don't really like resetting the input before knowing the text has been sent. But, oh well
 		elemMessageTextArea.value = '';
+		adjustTextAreaSize();
 	}
 
 	function insertAutocompleteText(textToInsert: string) {
