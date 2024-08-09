@@ -116,7 +116,11 @@
 				<span class="material-symbols-outlined"> arrow_back </span>
 			</a>
 		</svelte:fragment>
-		<h5 class="text-lg">Chat</h5>
+		{#await supabase.from('groups').select('name').eq('id', group_id)}
+			<h5 class="text-lg">Chat</h5>
+		{:then response}
+			<h5 class="text-lg">{response.data ? response.data[0].name : 'Chat'}</h5>
+		{/await}
 	</AppBar>
 	<!-- Conversation -->
 	<section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4 h-full`}>
