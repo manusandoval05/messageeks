@@ -33,6 +33,10 @@
 		})();
 	}
 
+	function topBarClick() {
+		console.log('Top Bar was clicked');
+	}
+
 	// For some reason, eslint thinks ScrollBehavior is undefined...
 	// eslint-disable-next-line no-undef
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
@@ -121,6 +125,12 @@
 		{:then response}
 			<h5 class="text-lg">{response.data ? response.data[0].name : 'Chat'}</h5>
 		{/await}
+
+		<svelte:fragment slot="trail">
+			<a class="flex content-center" href={`/channels/groups/${group_id}/settings`}>
+				<span class="material-symbols-outlined"> settings </span>
+			</a>
+		</svelte:fragment>
 	</AppBar>
 	<!-- Conversation -->
 	<section bind:this={elemChat} class={`p-4 overflow-y-auto space-y-4 h-full`}>
