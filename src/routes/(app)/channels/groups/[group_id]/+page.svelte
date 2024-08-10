@@ -3,6 +3,7 @@
 	import { AppBar, Avatar } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { constructMessageHTML } from '$lib';
+	import { hideAppRail } from '$lib/stores.js';
 
 	let elemChat: HTMLElement;
 	let cachedUserIds: any = {};
@@ -32,11 +33,6 @@
 			});
 		})();
 	}
-
-	function topBarClick() {
-		console.log('Top Bar was clicked');
-	}
-
 	// For some reason, eslint thinks ScrollBehavior is undefined...
 	// eslint-disable-next-line no-undef
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
@@ -72,6 +68,7 @@
 	};
 
 	onMount(async () => {
+		hideAppRail.set(true);
 		const groupMessagesRequest = await supabase
 			.from('group_messages')
 			.select()
@@ -116,7 +113,7 @@
 <div class="flex flex-col lg:max-h-[calc(100dvh-60px)] max-h-[100dvh]">
 	<AppBar background={'bg-surface-700'}>
 		<svelte:fragment slot="lead">
-			<a class="lg:hidden flex content-center" href="/channels/@me">
+			<a class="lg:hidden flex content-center" href="/channels/groups">
 				<span class="material-symbols-outlined"> arrow_back </span>
 			</a>
 		</svelte:fragment>

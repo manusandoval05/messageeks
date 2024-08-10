@@ -11,7 +11,8 @@
 	export let data;
 	$: ({ userConversations, username, activeConversationId } = data);
 
-	$: if (!activeConversationId) hideAppRail.set(false);
+	$: if (!data.activeConversationId) hideAppRail.set(false);
+	if (!data.activeConversationId) hideAppRail.set(false);
 </script>
 
 <section class="card w-full h-full">
