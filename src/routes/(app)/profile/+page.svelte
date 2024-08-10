@@ -27,7 +27,7 @@
 					</svelte:fragment>
 					<svelte:fragment slot="summary">Mi cuenta</svelte:fragment>
 					<svelte:fragment slot="content">
-						<form action="?/change-display-name" method="post">
+						<form action="?/change_display_name" method="post">
 							<label class="label">
 								<span>Cambiar nombre de despliegue</span>
 								<input
@@ -41,7 +41,7 @@
 							</label>
 							<button class="btn variant-filled-primary mt-2" type="submit"> Guardar </button>
 						</form>
-						<form action="?/change-username" method="post">
+						<form action="?/change_username" method="post">
 							<label class="label">
 								<span>Cambiar nombre de usuario único</span>
 								<input
@@ -56,7 +56,7 @@
 							<button class="btn variant-filled-primary mt-2" type="submit"> Guardar </button>
 						</form>
 						<hr />
-						<form action="?/change-password" method="post">
+						<form action="?/change_password" method="post">
 							<label class="label">
 								<span>Nueva contraseña</span>
 								<input
