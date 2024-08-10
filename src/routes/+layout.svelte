@@ -1,5 +1,5 @@
 <script>
-	import { invalidate, invalidateAll, goto } from '$app/navigation';
+	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -14,7 +14,6 @@
 
 		return () => data.subscription.unsubscribe();
 	});
-	
-	
 </script>
+
 <slot />

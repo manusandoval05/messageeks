@@ -16,7 +16,7 @@
 		</aside>
 	{/if}
 	<div>
-		<label for="email" class="block text-sm font-medium leading-6">Email address</label>
+		<label for="email" class="block text-sm font-medium leading-6">Correo electrónico</label>
 		<div class="mt-2">
 			<input
 				value={form?.email ?? ''}
@@ -32,10 +32,10 @@
 
 	<div>
 		<div class="flex items-center justify-between">
-			<label for="password" class="block text-sm font-medium leading-6">Password</label>
+			<label for="password" class="block text-sm font-medium leading-6">Contraseña</label>
 			<div class="text-sm">
 				<a href="/auth/forgotpassword" class="font-semibold text-primary-600 hover:text-primary-500"
-					>Forgot password?</a
+					>¿Olvidaste constraseña?</a
 				>
 			</div>
 		</div>
@@ -55,14 +55,14 @@
 		<button
 			type="submit"
 			class="flex w-full justify-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
-			>Sign in</button
+			>Iniciar sesión</button
 		>
 	</div>
 </form>
 
 <p class="mt-10 text-center text-sm text-gray-500">
-	Not a member?
+	¿No tienes cuenta?
 	<a href="/auth/register" class="font-semibold leading-6 text-primary-600 hover:text-primary-500"
-		>Sign up</a
+		>Registrarse</a
 	>
 </p>

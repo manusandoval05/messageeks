@@ -62,7 +62,7 @@
 <Modal />
 <Toast />
 <!-- App Shell -->
-<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? 'hidden' : ''}`}>
+<AppShell slotSidebarLeft={`w-auto hidden md:block`}>
 	<svelte:fragment slot="header">
 		<div class="hidden lg:block">
 			<AppBar>
