@@ -105,8 +105,16 @@
 					</div>
 
 					<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupFeatured">
-						<a class="btn variant-filled-primary" href="/logout">Logout</a>
-						<LightSwitch />
+						<div class="flex flex-col gap-2">
+							<div class="flex">
+								<p>Modo</p>
+								<LightSwitch />
+							</div>
+							<a class="btn variant-filled-primary" href="/profile">Editar perfil</a>
+							<a data-sveltekit-preload-data="tap" class="btn variant-filled-primary" href="/logout"
+								>Cerrar sesión</a
+							>
+						</div>
 					</div>
 				</AppRailTile>
 			</svelte:fragment>
