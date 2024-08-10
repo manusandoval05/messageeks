@@ -65,7 +65,7 @@
 			class="bg-transparent border-0 ring-0 resize-none h-10 max-h-[200px] lg:max-h-[50dvh]"
 			name="prompt"
 			id="prompt"
-			placeholder="Write a message..."
+			placeholder="Escribe un mensaje..."
 			rows="1"
 		></textarea>
 		<button

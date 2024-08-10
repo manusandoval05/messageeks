@@ -123,19 +123,7 @@
 	}
 	// When DOM mounted, scroll to bottom
 	onMount(() => {
-		const mediaQuery = window.matchMedia('(min-width: 1024px)');
-		if (mediaQuery.matches) {
-			hideAppRail.set(false);
-		} else {
-			hideAppRail.set(true);
-		}
-		mediaQuery.addEventListener('change', (event) => {
-			if (event.matches) {
-				hideAppRail.set(false);
-			} else {
-				hideAppRail.set(true);
-			}
-		});
+		hideAppRail.set(true);
 		scrollChatBottom();
 		supabase
 			.channel(`conversation_${conversation_id}`)
