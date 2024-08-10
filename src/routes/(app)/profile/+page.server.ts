@@ -25,21 +25,20 @@ export const actions = {
 		if (error) console.log(error);
 
 		if (error?.code === '23505') {
-			fail(400, {
+			return fail(400, {
 				username,
 				not_unique: true
 			});
 		}
 
-		if (!error) {
-			return {
-				success: true
-			};
-		}
+		return {
+			success: true,
+			message: 'Nombre de usuario guardado con éxito'
+		};
 	},
 	change_display_name: async ({ request, locals: { supabase, user } }) => {
 		const formData = await request.formData();
-		const newDisplayName = formData.get('display_name') as string;
+		const newDisplayName = formData.get('display-name') as string;
 
 		const { error } = await supabase
 			.from('user_profiles')
@@ -48,9 +47,12 @@ export const actions = {
 			})
 			.eq('user_id', user?.id);
 
+		console.log(error);
+
 		if (!error) {
 			return {
-				success: true
+				success: true,
+				message: 'Nombre de despliegue cambiado con éxito'
 			};
 		}
 	},
@@ -72,7 +74,8 @@ export const actions = {
 
 		if (!error) {
 			return {
-				success: true
+				success: true,
+				message: 'Contraseña cambiada con éxito'
 			};
 		}
 	}
