@@ -1,24 +1,28 @@
 <script lang="ts">
 	import { Accordion, AccordionItem, AppBar } from '@skeletonlabs/skeleton';
+	import { preferences } from '$lib/stores.js';
 
 	export let data;
 
 	export let form;
 
 	function changeTheme(theme: string) {
-		document.body.dataset.theme = theme;
+		preferences.set({
+			theme: theme
+		});
+		document.body.dataset.theme = $preferences.theme;
 	}
 
 	const themes = [
 		{
-			name: 'skeleton',
-			display_name: '💀 Skeleton',
-			background_color: '#242c46'
-		},
-		{
 			name: 'modern',
 			display_name: '🤖 Modern',
 			background_color: '#313276'
+		},
+		{
+			name: 'skeleton',
+			display_name: '💀 Skeleton',
+			background_color: '#242c46'
 		},
 		{
 			name: 'seafoam',
