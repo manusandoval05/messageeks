@@ -1,9 +1,20 @@
 <script lang="ts">
-	import { Accordion, AccordionItem, Avatar, popup, clipboard } from '@skeletonlabs/skeleton';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import {
+		Accordion,
+		AccordionItem,
+		Avatar,
+		popup,
+		clipboard,
+		getModalStore
+	} from '@skeletonlabs/skeleton';
+	import type { PopupSettings, ModalSettings } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 
 	export let data;
 	$: ({ supabase, group_id } = data);
+
+	let selectedUser = {};
 
 	const inviteGroupUrl = `${data.origin_url}/invite/group/${data.group_invite_id}`;
 
@@ -15,6 +26,24 @@
 		// Defines which side of your trigger the popup will appear
 		placement: 'bottom'
 	};
+
+	async function deleteUser(user: any) {
+		console.log(user);
+		const modal: ModalSettings = {
+			type: 'confirm',
+			// Data
+			title: `¿Expulsar a ${user.user_profiles.display_name}?`,
+			body: `¿Quieres eliminar a ${user.user_profiles.display_name}`,
+			// TRUE if confirm pressed, FALSE if cancel pressed
+			response: async (r: boolean) => {
+				if (r) {
+					const { error } = await supabase.from('group_members').delete().eq('id', user.id);
+					if (error) console.error(error);
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
 </script>
 
 <div class="max-w-screen-lg">
@@ -47,7 +76,7 @@
 							user_profiles(display_name, username)
 						`)
 						.eq('group_id', group_id) then response}
-						{#each response.data ?? [] as group_member}
+						{#each response.data ?? [] as group_member (group_member.id)}
 							<li>
 								<Avatar
 									initials={group_member.user_profiles.display_name.substring(0, 2)}
@@ -56,8 +85,10 @@
 								<span class="flex-auto">
 									{`${group_member.user_profiles.username} (${group_member.user_profiles.display_name})`}
 								</span>
-								<button class="btn-icon variant-filled-surface" use:popup={popupGroupMember}
-									>⋮</button
+								<button
+									class="btn-icon variant-filled-surface"
+									on:click={() => (selectedUser = group_member)}
+									use:popup={popupGroupMember}>⋮</button
 								>
 							</li>
 							<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupGroupMember">
@@ -66,7 +97,11 @@
 										<span class="material-symbols-outlined"> chat </span>
 										<span>Enviar un mensaje</span>
 									</button>
-									<button type="button" class="btn variant-filled-surface">
+									<button
+										on:click={() => deleteUser(selectedUser)}
+										type="button"
+										class="btn variant-filled-surface"
+									>
 										<span class="material-symbols-outlined"> person_remove </span>
 										<span>Expulsar del grupo</span>
 									</button>
