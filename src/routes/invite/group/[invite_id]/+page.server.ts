@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { PRIVATE_SUPABASE_SERVICE_KEY } from '$env/static/private';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 export const load = async ({ params, locals: { user } }) => {
-	if (!user) throw redirect(300, '/');
+	if (!user) throw redirect(303, '/');
 
 	const supabaseSuperUser = createClient(PUBLIC_SUPABASE_URL, PRIVATE_SUPABASE_SERVICE_KEY);
 
