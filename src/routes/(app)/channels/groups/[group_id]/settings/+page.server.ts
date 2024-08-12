@@ -4,19 +4,6 @@ export const load = async ({ locals: { supabase }, params, url }) => {
 		.select('id')
 		.eq('group_id', params.group_id);
 
-	const groupMembersRequest = await supabase
-		.from('group_members')
-		.select(
-			`
-		id,
-		group_id, 
-		user_id, 
-		user_profiles(display_name, username)
-	`
-		)
-		.eq('group_id', params.group_id);
-
-	console.log(groupMembersRequest.data);
 	if (groupInviteIdRequest.error) {
 		console.error(groupInviteIdRequest.error);
 		return;

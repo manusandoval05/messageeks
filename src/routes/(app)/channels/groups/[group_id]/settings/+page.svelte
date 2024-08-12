@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import {
 		Accordion,
 		AccordionItem,
@@ -14,7 +15,7 @@
 	const modalStore = getModalStore();
 
 	export let data;
-	$: ({ supabase, group_id } = data);
+	$: ({ supabase, group_id, user } = data);
 
 	let groupMembers: any[] = [];
 	let selectedUser = {};
@@ -29,6 +30,16 @@
 		// Defines which side of your trigger the popup will appear
 		placement: 'bottom'
 	};
+
+	async function leaveGroup() {
+		const userMemberId = groupMembers.filter((member) => member.user_id === user?.id).at(0);
+		const { error } = await supabase.from('group_members').delete().eq('id', userMemberId);
+		if (error) {
+			console.error(error);
+			return;
+		}
+		goto('/channels/groups');
+	}
 
 	async function deleteUser(user: any) {
 		const modal: ModalSettings = {
@@ -137,6 +148,20 @@
 					{/each}
 					<!-- ... -->
 				</ul>
+			</svelte:fragment>
+		</AccordionItem>
+		<AccordionItem>
+			<svelte:fragment slot="lead">
+				<span class="material-symbols-outlined"> emoji_people </span>
+			</svelte:fragment>
+			<svelte:fragment slot="summary">Acciones de grupo</svelte:fragment>
+			<svelte:fragment slot="content">
+				<div class="flex flex-col items-start gap-2">
+					<button on:click={leaveGroup} type="button" class="btn variant-filled-surface">
+						<span class="material-symbols-outlined"> logout </span>
+						<span>Abandonar grupo</span>
+					</button>
+				</div>
 			</svelte:fragment>
 		</AccordionItem>
 		<!-- ... -->
