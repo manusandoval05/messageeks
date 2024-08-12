@@ -8,12 +8,14 @@
 		getModalStore
 	} from '@skeletonlabs/skeleton';
 	import type { PopupSettings, ModalSettings } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 
 	const modalStore = getModalStore();
 
 	export let data;
 	$: ({ supabase, group_id } = data);
 
+	let groupMembers: any[] = [];
 	let selectedUser = {};
 
 	const inviteGroupUrl = `${data.origin_url}/invite/group/${data.group_invite_id}`;
@@ -28,15 +30,17 @@
 	};
 
 	async function deleteUser(user: any) {
-		console.log(user);
 		const modal: ModalSettings = {
 			type: 'confirm',
 			// Data
 			title: `¿Expulsar a ${user.user_profiles.display_name}?`,
-			body: `¿Quieres eliminar a ${user.user_profiles.display_name}`,
+			body: `¿Quieres eliminar a ${user.user_profiles.display_name} del grupo?`,
+			buttonTextSubmit: 'Confirmar',
+			buttonTextConfirm: 'Confirmar',
+			buttonTextCancel: 'Cancelar',
 			// TRUE if confirm pressed, FALSE if cancel pressed
-			response: async (r: boolean) => {
-				if (r) {
+			response: async (modalResponse: boolean) => {
+				if (modalResponse) {
 					const { error } = await supabase.from('group_members').delete().eq('id', user.id);
 					if (error) console.error(error);
 				}
@@ -44,6 +48,22 @@
 		};
 		modalStore.trigger(modal);
 	}
+	onMount(async () => {
+		const groupMembersRequest = await supabase
+			.from('group_members')
+			.select(
+				`
+				id,
+				group_id, 
+				user_id, 
+				user_profiles(display_name, username)
+			`
+			)
+			.eq('group_id', group_id);
+		if (groupMembersRequest.error) console.error(groupMembersRequest.error);
+
+		groupMembers = groupMembersRequest.data ?? [];
+	});
 </script>
 
 <div class="max-w-screen-lg">
@@ -67,49 +87,39 @@
 			<svelte:fragment slot="summary">Integrantes del grupo</svelte:fragment>
 			<svelte:fragment slot="content">
 				<ul class="list">
-					{#await supabase
-						.from('group_members')
-						.select(`
-							id,
-							group_id, 
-							user_id, 
-							user_profiles(display_name, username)
-						`)
-						.eq('group_id', group_id) then response}
-						{#each response.data ?? [] as group_member (group_member.id)}
-							<li>
-								<Avatar
-									initials={group_member.user_profiles.display_name.substring(0, 2)}
-									width={'w-10'}
-								/>
-								<span class="flex-auto">
-									{`${group_member.user_profiles.username} (${group_member.user_profiles.display_name})`}
-								</span>
+					{#each groupMembers as group_member (group_member.id)}
+						<li>
+							<Avatar
+								initials={group_member.user_profiles.display_name.substring(0, 2)}
+								width={'w-10'}
+							/>
+							<span class="flex-auto">
+								{`${group_member.user_profiles.username} (${group_member.user_profiles.display_name})`}
+							</span>
+							<button
+								class="btn-icon variant-filled-surface"
+								on:click={() => (selectedUser = group_member)}
+								use:popup={popupGroupMember}>⋮</button
+							>
+						</li>
+						<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupGroupMember">
+							<div class="flex flex-col gap-2">
+								<button type="button" class="btn variant-filled-surface">
+									<span class="material-symbols-outlined"> chat </span>
+									<span>Enviar un mensaje</span>
+								</button>
 								<button
-									class="btn-icon variant-filled-surface"
-									on:click={() => (selectedUser = group_member)}
-									use:popup={popupGroupMember}>⋮</button
+									on:click={() => deleteUser(selectedUser)}
+									type="button"
+									class="btn variant-filled-surface"
 								>
-							</li>
-							<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupGroupMember">
-								<div class="flex flex-col gap-2">
-									<button type="button" class="btn variant-filled-surface">
-										<span class="material-symbols-outlined"> chat </span>
-										<span>Enviar un mensaje</span>
-									</button>
-									<button
-										on:click={() => deleteUser(selectedUser)}
-										type="button"
-										class="btn variant-filled-surface"
-									>
-										<span class="material-symbols-outlined"> person_remove </span>
-										<span>Expulsar del grupo</span>
-									</button>
-								</div>
-								<div class="arrow bg-surface-700" />
+									<span class="material-symbols-outlined"> person_remove </span>
+									<span>Expulsar del grupo</span>
+								</button>
 							</div>
-						{/each}
-					{/await}
+							<div class="arrow bg-surface-700" />
+						</div>
+					{/each}
 					<!-- ... -->
 				</ul>
 			</svelte:fragment>
