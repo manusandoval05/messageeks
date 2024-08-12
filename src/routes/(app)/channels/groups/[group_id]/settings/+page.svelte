@@ -2,6 +2,7 @@
 	import {
 		Accordion,
 		AccordionItem,
+		AppBar,
 		Avatar,
 		popup,
 		clipboard,
@@ -67,6 +68,14 @@
 </script>
 
 <div class="max-w-screen-lg">
+	<AppBar background={'bg-surface-700'}>
+		<svelte:fragment slot="lead">
+			<a href={`/channels/groups/${group_id}`}>
+				<span class="material-symbols-outlined"> arrow_back </span>
+			</a>
+		</svelte:fragment>
+		<h2 class="text-lg">Ajustes del grupo</h2>
+	</AppBar>
 	<Accordion>
 		<AccordionItem open>
 			<svelte:fragment slot="lead">
