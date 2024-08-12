@@ -44,22 +44,31 @@
 							id,
 							group_id, 
 							user_id, 
-							user_profiles(display_name)
+							user_profiles(display_name, username)
 						`)
 						.eq('group_id', group_id) then response}
 						{#each response.data ?? [] as group_member}
 							<li>
-								<Avatar initials="TU" width={'w-10'} />
+								<Avatar
+									initials={group_member.user_profiles.display_name.substring(0, 2)}
+									width={'w-10'}
+								/>
 								<span class="flex-auto">
-									{group_member.user_profiles.display_name}
+									{`${group_member.user_profiles.display_name} (${group_member.user_profiles.username})`}
 								</span>
-								<button use:popup={popupGroupMember}>⋮</button>
+								<button class="btn-icon variant-filled-surface" use:popup={popupGroupMember}
+									>⋮</button
+								>
 							</li>
 							<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupGroupMember">
 								<div class="flex flex-col gap-2">
 									<button type="button" class="btn variant-filled-surface">
+										<span class="material-symbols-outlined"> chat </span>
+										<span>Enviar un mensaje</span>
+									</button>
+									<button type="button" class="btn variant-filled-surface">
 										<span class="material-symbols-outlined"> person_remove </span>
-										<span>Quitar del grupo</span>
+										<span>Expulsar del grupo</span>
 									</button>
 								</div>
 								<div class="arrow bg-surface-700" />
