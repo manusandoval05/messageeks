@@ -13,6 +13,7 @@
 	import { page } from '$app/stores';
 	import { hideAppRail } from '$lib/stores';
 	import { popup, LightSwitch } from '@skeletonlabs/skeleton';
+	import logo from '$lib/img/logo_small.png';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	// Highlight JS
@@ -66,6 +67,7 @@
 		<div class="hidden lg:block">
 			<AppBar>
 				<svelte:fragment slot="lead">
+					<img src={logo} alt="" />
 					<strong class="text-xl uppercase">Messageeks</strong>
 				</svelte:fragment>
 			</AppBar>
