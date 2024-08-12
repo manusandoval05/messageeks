@@ -44,6 +44,12 @@
 				if (modalResponse) {
 					const { error } = await supabase.from('group_members').delete().eq('id', user.id);
 					if (error) console.error(error);
+
+					groupMembers.splice(
+						groupMembers.findIndex((members) => members.id === user.id),
+						1
+					);
+					groupMembers = groupMembers;
 				}
 			}
 		};
