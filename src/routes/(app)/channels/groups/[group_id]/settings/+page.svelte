@@ -54,7 +54,7 @@
 									width={'w-10'}
 								/>
 								<span class="flex-auto">
-									{`${group_member.user_profiles.display_name} (${group_member.user_profiles.username})`}
+									{`${group_member.user_profiles.username} (${group_member.user_profiles.display_name})`}
 								</span>
 								<button class="btn-icon variant-filled-surface" use:popup={popupGroupMember}
 									>⋮</button
