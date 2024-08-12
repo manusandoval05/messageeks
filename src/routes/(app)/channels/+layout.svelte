@@ -105,7 +105,7 @@
 
 					<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupFeatured">
 						<div class="flex flex-col gap-2">
-							<div class="flex">
+							<div class="flex gap-2">
 								<p>Modo</p>
 								<LightSwitch />
 							</div>
