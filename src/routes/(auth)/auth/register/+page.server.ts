@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 
 export const actions = {
-	default: async ({ request, locals: { supabase } }) => {
+	default: async ({ request, locals: { supabase }, url }) => {
 		const formData = await request.formData();
 
 		const email = formData.get('email') as string;
@@ -13,7 +13,10 @@ export const actions = {
 
 		const { error } = await supabase.auth.signUp({
 			email,
-			password
+			password,
+			options: {
+				emailRedirectTo: `${url.origin}/initial-setup`
+			}
 		});
 		console.log(error);
 
