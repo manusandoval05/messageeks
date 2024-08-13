@@ -95,11 +95,11 @@
 					</svelte:fragment>
 					<svelte:fragment slot="summary">Crear una cuenta</svelte:fragment>
 					<svelte:fragment slot="content">
-						<form action="?/change_display_name" method="post">
+						<form method="post">
 							<label class="label">
-								<span>Cambiar nombre de despliegue</span>
+								<span>¿Cuál será el nombre de despliegue?</span>
 								<input
-									value={form?.display_name}
+									value={form?.display_name ?? ''}
 									class="input"
 									name="display-name"
 									title="Input (text)"
@@ -108,9 +108,9 @@
 								/>
 							</label>
 							<label class="label">
-								<span>Cambiar nombre de usuario único</span>
+								<span>¿Cuál será el nombre de usuario único?</span>
 								<input
-									value={form?.username}
+									value={form?.username ?? ''}
 									class="input"
 									name="username"
 									title="Input (text)"
