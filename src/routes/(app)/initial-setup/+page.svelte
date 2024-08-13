@@ -2,8 +2,6 @@
 	import { Accordion, AccordionItem, AppBar } from '@skeletonlabs/skeleton';
 	import { preferences } from '$lib/stores.js';
 
-	export let data;
-
 	export let form;
 
 	function changeTheme(theme: string) {
