@@ -74,13 +74,18 @@
 				id,
 				group_id, 
 				user_id, 
-				user_profiles(display_name, username)
+				user_profiles(
+					display_name, 
+					username,
+					profile_invites(id)
+				)
 			`
 			)
 			.eq('group_id', group_id);
 		if (groupMembersRequest.error) console.error(groupMembersRequest.error);
 
 		groupMembers = groupMembersRequest.data ?? [];
+		selectedUser = groupMembers.at(0);
 	});
 </script>
 
@@ -130,10 +135,14 @@
 						</li>
 						<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupGroupMember">
 							<div class="flex flex-col gap-2">
-								<button type="button" class="btn variant-filled-surface">
+								<a
+									data-sveltekit-preload-data="tap"
+									href={`/invite/user/${selectedUser ? selectedUser.user_profiles.profile_invites[0].id : ''}`}
+									class="btn variant-filled-primary"
+								>
 									<span class="material-symbols-outlined"> chat </span>
 									<span>Enviar un mensaje</span>
-								</button>
+								</a>
 								<button
 									on:click={() => deleteUser(selectedUser)}
 									type="button"
