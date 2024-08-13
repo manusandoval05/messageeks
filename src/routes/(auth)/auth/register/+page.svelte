@@ -8,12 +8,12 @@
 	<div class="sm:mx-auto sm:w-full sm:max-w-sm">
 		<img class="mx-auto h-20 w-auto" src={logo} alt="Messageeks" />
 		<h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight">
-			Inicia sesión en Messageeks
+			Crea cuenta de Messageeks
 		</h2>
 	</div>
 
 	<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-		<form class="space-y-6" action="?/login" method="POST">
+		<form class="space-y-6" method="POST">
 			{#if form?.error}
 				<aside class="alert variant-soft-error">
 					<!-- Icon -->
@@ -22,7 +22,20 @@
 					</div>
 					<!-- Message -->
 					<div class="alert-message">
-						<h3 class="h3">Las credenciales de inicio de sesión son inválidas</h3>
+						<h3 class="h3">{form.message}</h3>
+					</div>
+				</aside>
+			{/if}
+			{#if form?.success}
+				<aside class="alert variant-soft-success">
+					<!-- Icon -->
+					<div>
+						<span class="material-symbols-outlined"> check_circle </span>
+					</div>
+					<!-- Message -->
+					<div class="alert-message">
+						<h3 class="h3">El usuario ha sido creado con éxito</h3>
+						<p>Confirma tu correo electrónico</p>
 					</div>
 				</aside>
 			{/if}
@@ -42,16 +55,7 @@
 			</div>
 
 			<div>
-				<div class="flex items-center justify-between">
-					<label for="password" class="block text-sm font-medium leading-6">Contraseña</label>
-					<div class="text-sm">
-						<a
-							href="/auth/forgotpassword"
-							class="font-semibold text-primary-600 hover:text-primary-500"
-							>¿Olvidaste constraseña?</a
-						>
-					</div>
-				</div>
+				<label for="password" class="block text-sm font-medium leading-6">Contraseña</label>
 				<div class="mt-2">
 					<input
 						id="password"
@@ -63,7 +67,21 @@
 					/>
 				</div>
 			</div>
-
+			<div>
+				<label for="confirm-password" class="block text-sm font-medium leading-6"
+					>Confirmar contraseña</label
+				>
+				<div class="mt-2">
+					<input
+						id="confirm-password"
+						name="confirm-password"
+						type="password"
+						autocomplete="current-password"
+						required
+						class="block w-full rounded-md border-0 py-1.5 text-black shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+					/>
+				</div>
+			</div>
 			<div>
 				<button
 					type="submit"
@@ -74,10 +92,9 @@
 		</form>
 
 		<p class="mt-10 text-center text-sm text-gray-500">
-			¿No tienes cuenta?
-			<a
-				href="/auth/register"
-				class="font-semibold leading-6 text-primary-600 hover:text-primary-500">Registrarse</a
+			¿Ya cuentas con cuenta?
+			<a href="/auth/login" class="font-semibold leading-6 text-primary-600 hover:text-primary-500"
+				>Inicia sesión</a
 			>
 		</p>
 	</div>

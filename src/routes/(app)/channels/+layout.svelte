@@ -1,16 +1,19 @@
 <script lang="ts">
-	import '../../../app.postcss';
 	import {
+		initializeStores,
 		AppShell,
 		AppBar,
 		AppRail,
 		AppRailAnchor,
 		AppRailTile,
-		Avatar
+		Avatar,
+		Modal,
+		Toast
 	} from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { hideAppRail } from '$lib/stores';
-	import { popup } from '@skeletonlabs/skeleton';
+	import { popup, LightSwitch } from '@skeletonlabs/skeleton';
+	import logo from '$lib/img/logo_small.png';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	// Highlight JS
@@ -36,6 +39,8 @@
 	let currentTile = 0;
 	export let data;
 
+	initializeStores();
+
 	$: ({ supabase, display_name } = data);
 
 	const popupFeatured: PopupSettings = {
@@ -54,12 +59,15 @@
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
+<Modal />
+<Toast />
 <!-- App Shell -->
-<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? 'hidden' : ''}`}>
+<AppShell slotSidebarLeft={`w-auto ${$hideAppRail ? 'hidden' : ''} md:block`}>
 	<svelte:fragment slot="header">
 		<div class="hidden lg:block">
 			<AppBar>
 				<svelte:fragment slot="lead">
+					<img src={logo} alt="" />
 					<strong class="text-xl uppercase">Messageeks</strong>
 				</svelte:fragment>
 			</AppBar>
@@ -78,7 +86,7 @@
 			</AppRailAnchor>
 			<AppRailAnchor
 				href="/channels/groups/"
-				selected={$page.url.pathname.startsWith('channels/groups')}
+				selected={$page.url.pathname.startsWith('/channels/groups')}
 			>
 				<svelte:fragment slot="lead">
 					<span class="material-symbols-outlined"> groups </span>
@@ -97,8 +105,17 @@
 						</button>
 					</div>
 
-					<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
-						<a href="/logout"><button class="btn variant-filled-primary">logout</button></a>
+					<div class="card p-4 w-72 shadow-xl z-10" data-popup="popupFeatured">
+						<div class="flex flex-col gap-2">
+							<div class="flex gap-2">
+								<p>Modo</p>
+								<LightSwitch />
+							</div>
+							<a class="btn variant-filled-primary" href="/profile">Editar perfil</a>
+							<a data-sveltekit-preload-data="tap" class="btn variant-filled-primary" href="/logout"
+								>Cerrar sesión</a
+							>
+						</div>
 					</div>
 				</AppRailTile>
 			</svelte:fragment>
