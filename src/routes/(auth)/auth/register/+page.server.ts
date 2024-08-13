@@ -20,6 +20,8 @@ export const actions = {
 		if (error) {
 			if (error.code === 'weak_password')
 				return fail(400, { email, message: 'La contraseña es muy débil', error: true });
+
+			return fail(400, { email, message: 'El correo ya se ha registrado', error: true });
 		}
 
 		return {
