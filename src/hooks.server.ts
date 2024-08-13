@@ -70,6 +70,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	if (!event.locals.session && event.url.pathname.startsWith('/initial-setup')) {
 		redirect(303, '/auth/login');
 	}
+
 	if (!event.locals.session && event.url.pathname.startsWith('/channels')) {
 		redirect(303, '/auth/login');
 	}
@@ -93,5 +94,4 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 	return resolve(event);
 };
-
 export const handle: Handle = sequence(supabase, authGuard);
