@@ -110,7 +110,7 @@
 		crossorigin="anonymous"
 	/>
 </svelte:head>
-<div class="flex flex-col lg:max-h-[calc(100dvh-60px)] max-h-[100dvh]">
+<div class="flex flex-col lg:max-h-[calc(100dvh-96px)] max-h-[100dvh]">
 	<AppBar background={'bg-surface-700'}>
 		<svelte:fragment slot="lead">
 			<a class="lg:hidden flex content-center" href="/channels/groups">
