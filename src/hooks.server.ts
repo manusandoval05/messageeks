@@ -84,7 +84,6 @@ const authGuard: Handle = async ({ event, resolve }) => {
 			.select('id')
 			.eq('user_id', user?.id);
 
-		console.log(data, error);
 		if (error) redirect(303, '/auth/login');
 
 		if (!data.length) {
