@@ -12,7 +12,6 @@ export const load = async ({ parent, params }) => {
 		console.log(userConversationsRequest.error);
 		return;
 	}
-	console.log(userConversationsRequest.data);
 
 	return {
 		userConversations: userConversationsRequest.data,
