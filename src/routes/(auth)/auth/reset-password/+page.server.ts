@@ -5,7 +5,7 @@ export const actions = {
 		const email = formData.get('email') as string;
 
 		const { error } = await supabase.auth.resetPasswordForEmail(email, {
-			redirectTo: `${url.origin}/`
+			redirectTo: `${url.origin}/update-password`
 		});
 		if (error) return { error: true };
 
