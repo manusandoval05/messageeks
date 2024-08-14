@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let form;
-
+	import '../../app.postcss';
 	import logo from '$lib/img/logo.png';
 </script>
 
